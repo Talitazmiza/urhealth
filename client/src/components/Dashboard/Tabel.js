@@ -75,7 +75,7 @@ export default function Tabel() {
                                             autofocus
                                             margin="dense"
                                             id="first name"
-                                            label="first name"
+                                            label="First Name"
                                             type="text"
                                             fullWidth
                                         />
@@ -83,7 +83,7 @@ export default function Tabel() {
                                             autofocus
                                             margin="dense"
                                             id="last name"
-                                            label="last name"
+                                            label="Last Name"
                                             type="text"
                                             fullWidth
                                         />
@@ -94,7 +94,7 @@ export default function Tabel() {
                                             label="select"
                                             value={currency}
                                             onChange={handleChange}
-                                            helperText="Please select your goldar"
+                                            helperText="Please select your blood type"
                                         >
                                             {currencies.map((option) => (
                                                 <MenuItem key={option.value} value={option.value}>
@@ -106,7 +106,7 @@ export default function Tabel() {
                                             autofocus
                                             margin="dense"
                                             id="tinggi badan"
-                                            label="tinggi badan"
+                                            label="Height"
                                             InputLabelProps={{
                                                 shrink: true,
                                             }}

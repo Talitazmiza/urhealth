@@ -88,7 +88,7 @@ function Graph() {
     //     console.log(event);
     // }
     const sizeBasedOnWindow = ((windowWidth / 4) * 2);
-    const size = sizeBasedOnWindow > 2000 ? 2000 : sizeBasedOnWindow;
+    const size = sizeBasedOnWindow > 1000 ? 1000 : sizeBasedOnWindow;
     // const historySize = card.current ? card.current.clientWidth - 20 : 0;
 
     return (
@@ -104,7 +104,6 @@ function Graph() {
                   scoreFontSize={size < 300 ? 50 : 120}
                   onPointClick={handlePointClick}
                 />
-                lala
             </div>
         </>
     );

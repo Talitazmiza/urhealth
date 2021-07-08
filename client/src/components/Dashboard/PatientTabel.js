@@ -11,7 +11,7 @@ import TableRow from '@material-ui/core/TableRow';
 import "bootstrap/dist/css/bootstrap.min.css";
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
-import {getPatient} from "../../api";
+import { getPatients } from "../../api";
 
 const columns = [
     { id: 'firstName', label: 'First name', align: 'center', minWidth: 150 },
@@ -93,7 +93,7 @@ export default function StickyHeadTable() {
 
     const [ patient, setPatient ] = useState([]);
     const retrievePatient = () => {
-        getPatient()
+        getPatients()
             .then(response => {
                 setPatient(response.data.result);
             })

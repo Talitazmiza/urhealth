@@ -1,6 +1,6 @@
 [
   {
-    "metric": "totalCholesterol",
+    "metric": "Cholesterol",
     "value": 0.5,
     "children": [
       {

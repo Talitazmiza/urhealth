@@ -1,4 +1,5 @@
 import React from 'react';
+import FaceIcon from '@material-ui/icons/Face';
 
 function Sidebar() {
     // const sidebarAuto = {
@@ -7,13 +8,19 @@ function Sidebar() {
     // };
     return (
         <aside className="main-sidebar sidebar-dark-primary elevation-4">
-            <a href="index3.html" className="brand-link">
+            <a href="" className="brand-link">
                 <span className="brand-text font-weight-light">Welcome, Saracha</span>
             </a>
 
             <div className="sidebar">
                 <nav className="mt-2 ">
                     <ul className="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                        <li className="nav-item">
+                            <a href="/profile" className="nav-link">
+                                <FaceIcon />
+                                <p>  Profile</p>
+                            </a>
+                        </li>
                         <li className="nav-item">
                             <a href="/dashboard" className="nav-link">
                                 <i className="nav-icon fas fa-chart-pie"/>

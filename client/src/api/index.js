@@ -9,16 +9,30 @@ API.interceptors.request.use((req) => {
   return req;
 });
 
-export const getPatient = () => {
+export const signIn = (form) => API.post('/user/signin', form);
+export const signUp = (form) => API.post('/user/signup', form);
+
+
+
+// Patient API
+export const getPatients = () => {
   return axios.get('http://localhost:5000/patient/all');
 };
 
-export const createPatient = (data) => {
+export const createPatients = (data) => {
   return axios.post('http://localhost:5000/patient/create', data);
 };
 
-export const signIn = (form) => API.post('/user/signin', form);
-export const signUp = (form) => API.post('/user/signup', form);
+// Doctor API
+export const getDoctor = () => {
+  return axios.get('http://localhost:5000/doctor/all');
+};
+
+export const createDoctor = (data) => {
+  return axios.post('http://localhost:5000/doctor/create', data);
+};
+
+export const getGraph = () => API.get('http://localhost:5000/patient/alldata');
 
 // export const fetchPosts = () => API.get('/posts');
 // export const createPost = (newPost) => API.post('/posts', newPost);
