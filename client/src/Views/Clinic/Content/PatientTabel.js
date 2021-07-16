@@ -1,3 +1,4 @@
+// post
 import React, { useState, useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -86,9 +87,10 @@ const rows = [
 
 
 export default function PatientTable() {
-    const patients = useSelector((state) => state.patients);
+    const patients = useSelector((state) => state.patients);  // patients mengacu di reducers/indexjs
     const classes = useStyles();
-    console.log(patients);
+    // console.log(patients);
+
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [ patient, setPatient ] = useState([]);
@@ -207,7 +209,7 @@ export default function PatientTable() {
                                                                 <TextField
                                                                     autofocus
                                                                     margin="dense"
-                                                                    id="tinggi badan"
+                                                                    id="height"
                                                                     label="Height"
                                                                     InputLabelProps={{
                                                                         shrink: true,
@@ -245,8 +247,8 @@ export default function PatientTable() {
                 count={rows.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
-                onChangePage={handleChangePage}
-                onChangeRowsPerPage={handleChangeRowsPerPage}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
             />
         </Paper>
     );

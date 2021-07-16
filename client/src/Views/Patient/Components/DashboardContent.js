@@ -3,7 +3,7 @@ import Graph from '../Content/Graph';
 
 function DashboardContent() {
     return (
-        <div className="content-wrapper">
+        <div className="content-wrapper" style={{ height: "100%" }}>
             <div className="content-header">
                 <div className="container-fluid">
                     <div className="row mb-2">

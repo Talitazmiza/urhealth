@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import HGraph, { hGraphConvert, calculateHealthScore } from 'hgraph-react';
-import data2017 from '../Data/2017.json';
-import data2018 from '../Data/2018.json';
+import HGraph, { hGraphConvert, calculateHealthScore } from 'modified-lite-hgraph';
 import '../Data/data.css';
 import { getGraph } from '../../../api';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -46,25 +44,25 @@ function Graph() {
         });
     };
 
-    const converted2017 = convertDataSet(data2017);
-    const converted2018 = convertDataSet(data2018);
+    // const converted2017 = convertDataSet(data2017);
+    // const converted2018 = convertDataSet(data2018);
     const convertDbData = convertDataSet(graph);
     console.log(convertDbData)
-    const yearData = [
-        {
-            label: '2017',
-            data: converted2017,
-            score: parseInt(calculateHealthScore(converted2017), 10),
-        },
-        {
-            label: '2018',
-            data: converted2018,
-            score: parseInt(calculateHealthScore(converted2018), 10),
-        },
-
-    ];
+    // const yearData = [
+        // {
+        //     label: '2017',
+        //     data: converted2017,
+        //     score: parseInt(calculateHealthScore(converted2017), 10),
+        // },
+    //     {
+    //         label: '2018',
+    //         data: converted2018,
+    //         score: parseInt(calculateHealthScore(converted2018), 10),
+    //     },
+    //
+    // ];
     const [windowWidth, setwindowWidth] = useState(window.innerWidth);
-    const [currentYearData] = useState(yearData[0]);
+    // const [currentYearData] = useState(yearData[0]);
     // console.log(data2017)
     // this.state = {
     //   windowWidth: window.innerWidth,

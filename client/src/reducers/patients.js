@@ -1,28 +1,28 @@
 import { FETCH_ALL, CREATE } from '../constants/actionTypes';
 
-// export default (patients = [], action) => {
-//     switch (action.type) {
-//         case 'FETCH_ALL':
-//             return action.payload;
-//         case 'CREATE':
-//             return [...patients, action.payload];
-//         default:
-//             return patients;
-//     }
-// }
-
-export default function patientReducer(state = {patients : []}, action) {
+export default (patients = [], action) => {
     switch (action.type) {
         case 'FETCH_ALL':
-            return [
-                { patients : action.payload.patient }, ...state.patients
-            ]
+            return action.payload;
         case 'CREATE':
-            return [
-
-            ]
+            return [...patients, action.payload]; // send an array first spread all of the patients then add new patient and then the new patient will stored in the action.payload
         default:
-            return state;
+            return patients;
     }
-    return state;
 }
+
+// export default function patientReducer(state = {patients : []}, action) {
+//     switch (action.type) {
+//         case 'FETCH_ALL':
+//             return [
+//                 { patients : action.payload.patient }, ...state.patients
+//             ]
+//         case 'CREATE':
+//             return [
+//
+//             ]
+//         default:
+//             return state;
+//     }
+//     return state;
+// }

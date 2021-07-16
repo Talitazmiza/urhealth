@@ -1,3 +1,4 @@
+// form
 import React, { useState } from 'react';
 import PatientTabel from './PatientTabel';
 import Dialog from '@material-ui/core/Dialog';
@@ -13,6 +14,7 @@ import AddBoxIcon from '@material-ui/icons/AddBox';
 import { useDispatch, useSelector } from "react-redux";
 import { createPatients } from '../../../actions/patients';
 
+
 const useStyles = makeStyles((theme) => ({
     root: {
         '& .MuiTextField-root': {
@@ -24,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function PatTable() {
     const patients = useSelector((state) => state.patients);
-    console.log(patients);
+    // console.log(patients);
 
     const [open, setOpen] = React.useState(false);
     const [patientData, setPatientData] = useState({
@@ -86,10 +88,19 @@ export default function PatTable() {
                             {/*create patient pop up*/}
                             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                                 <DialogTitle id="form-dialog-title">Add patient</DialogTitle>
-                                <DialogContent handleSubmit={handleSubmit}>
+                                <DialogContent>
                                     <DialogContentText>
                                         To add patient detail, please fill data here.
                                     </DialogContentText>
+                                    <TextField
+                                        autoFocus
+                                        margin="dense"
+                                        id="email"
+                                        label="Email"
+                                        type="text"
+                                        fullWidth
+                                        value={patientData.email} onChange={(e) => setPatientData({...patientData, email: e.target.value })}
+                                    />
                                     <TextField
                                         autoFocus
                                         margin="dense"
@@ -97,7 +108,7 @@ export default function PatTable() {
                                         label="First Name"
                                         type="text"
                                         fullWidth
-                                        value={patientData.firstname}onChange={(e) => setPatientData({...patientData, firstname: e.target.value })}
+                                        value={patientData.firstname} onChange={(e) => setPatientData({...patientData, firstname: e.target.value })}
                                     />
                                     <TextField
                                         autoFocus
@@ -106,7 +117,7 @@ export default function PatTable() {
                                         label="Last Name"
                                         type="text"
                                         fullWidth
-                                        value={patientData.lastname}onChange={(e) => setPatientData({...patientData, lastname: e.target.value })}
+                                        value={patientData.lastname} onChange={(e) => setPatientData({...patientData, lastname: e.target.value })}
                                     />
                                     <TextField
                                         id="bloodtype"
@@ -115,7 +126,7 @@ export default function PatTable() {
                                         label="Blood Type"
                                         type="text"
                                         fullWidth
-                                        value={patientData.bloodtype}onChange={(e) => setPatientData({...patientData, bloodtype: e.target.value })}
+                                        value={patientData.bloodtype} onChange={(e) => setPatientData({...patientData, bloodtype: e.target.value })}
                                     />
                                     <TextField
                                         autoFocus
@@ -124,14 +135,14 @@ export default function PatTable() {
                                         label="Height"
                                         type="number"
                                         fullWidth
-                                        value={patientData.height}onChange={(e) => setPatientData({...patientData, height: e.target.value })}
+                                        value={patientData.height} onChange={(e) => setPatientData({...patientData, height: e.target.value })}
                                     />
                                 </DialogContent>
                                 <DialogActions>
                                     <Button onClick={handleClose} variant="outlined" color="secondary">
                                         Cancel
                                     </Button>
-                                    <Button variant="outlined" color="primary" type="submit" fullWidth>
+                                    <Button onClick={handleSubmit} variant="outlined" color="primary" type="submit" fullWidth>
                                         Add
                                     </Button>
                                 </DialogActions>

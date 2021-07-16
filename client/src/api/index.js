@@ -13,7 +13,6 @@ export const signIn = (form) => API.post('/user/signin', form);
 export const signUp = (form) => API.post('/user/signup', form);
 
 
-
 // Patient API
 export const getPatients = () => {
   return axios.get('http://localhost:5000/patient/all');
