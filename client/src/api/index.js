@@ -12,17 +12,27 @@ API.interceptors.request.use((req) => {
 export const signIn = (form) => API.post('/user/signin', form);
 export const signUp = (form) => API.post('/user/signup', form);
 
-
-// Patient API
-export const getPatients = () => {
+////// Patient API ///////
+export const getAllPatient = () => {
   return axios.get('http://localhost:5000/patient/all');
 };
 
-export const createPatients = (data) => {
+export const createPatient = (data) => {
   return axios.post('http://localhost:5000/patient/create', data);
 };
 
-// Doctor API
+export const updatePatient = (id, updatedPatient) => {
+  return axios.put('http://localhost:5000/patient/update/:id', updatedPatient);
+};
+
+export const deletePatient = (id) => {
+  return axios.delete('http://localhost:5000/patient/:id');
+};
+
+// export const getPatients = () => axios.get('http://localhost:5000/patient/all');
+// export const createPatients = (data) => axios.post('http://localhost:5000/patient/create', data);
+
+/////// Doctor API //////
 export const getDoctor = () => {
   return axios.get('http://localhost:5000/doctor/all');
 };
@@ -32,10 +42,3 @@ export const createDoctor = (data) => {
 };
 
 export const getGraph = () => API.get('http://localhost:5000/patient/alldata');
-
-// export const fetchPosts = () => API.get('/posts');
-// export const createPost = (newPost) => API.post('/posts', newPost);
-// export const likePost = (id) => API.patch(`/posts/${id}/likePost`);
-// export const updatePost = (id, updatedPost) => API.patch(`/posts/${id}`, updatedPost);
-// export const deletePost = (id) => API.delete(`/posts/${id}`);
-

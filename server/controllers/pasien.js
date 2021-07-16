@@ -1,7 +1,5 @@
 import Patient from '../models/pasien.js';
 import UserModal from '../models/user.js';
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import data from "../models/data.js";
 

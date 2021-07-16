@@ -8,21 +8,11 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContentText from "@material-ui/core/DialogContentText";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import { useDispatch, useSelector } from "react-redux";
-import { createPatients } from '../../../actions/patients';
+import { createPatient, updatePatient, deletePatient } from '../../../actions/patients';
 
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-        '& .MuiTextField-root': {
-            margin: theme.spacing(1),
-            width: '25ch',
-        },
-    },
-}));
 
 export default function PatTable() {
     const patients = useSelector((state) => state.patients);
@@ -54,7 +44,7 @@ export default function PatTable() {
     function handleSubmit(e) {
         e.preventDefault();
 
-        dispatch(createPatients(patientData));
+        dispatch(createPatient(patientData));
 
         // console.log(`Patient successfully created!`);
         // console.log(`FName: ${this.state.firstname}`);
@@ -92,15 +82,15 @@ export default function PatTable() {
                                     <DialogContentText>
                                         To add patient detail, please fill data here.
                                     </DialogContentText>
-                                    <TextField
-                                        autoFocus
-                                        margin="dense"
-                                        id="email"
-                                        label="Email"
-                                        type="text"
-                                        fullWidth
-                                        value={patientData.email} onChange={(e) => setPatientData({...patientData, email: e.target.value })}
-                                    />
+                                    {/*<TextField*/}
+                                    {/*    autoFocus*/}
+                                    {/*    margin="dense"*/}
+                                    {/*    id="email"*/}
+                                    {/*    label="Email"*/}
+                                    {/*    type="text"*/}
+                                    {/*    fullWidth*/}
+                                    {/*    value={patientData.email} onChange={(e) => setPatientData({...patientData, email: e.target.value })}*/}
+                                    {/*/>*/}
                                     <TextField
                                         autoFocus
                                         margin="dense"

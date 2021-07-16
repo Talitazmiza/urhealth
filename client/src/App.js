@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.css";
 import { useDispatch } from "react-redux";
-import { getPatients } from './actions/patients';
+import { getAllPatient } from './actions/patients';
 import Auth from './components/Auth/Auth';
 import Dashboard from './components/Dashboard/Dashboard';
 import Patient from './components/Dashboard/Patient';
@@ -22,7 +22,7 @@ const App = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(getPatients());
+        dispatch(getAllPatient());
     }, [dispatch]);
 
     return (
