@@ -6,7 +6,6 @@ const pasienSchema = mongoose.Schema({
     bloodtype: { type: String, required: true },
     height: { type: Number, required: true },
     weight: { type: Number, required: true },
-    password: { type: String, required: true },
     id: { type: String },
     user_data:
         {
