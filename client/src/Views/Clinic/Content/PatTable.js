@@ -11,33 +11,54 @@ import Button from "@material-ui/core/Button";
 import IconButton from '@material-ui/core/IconButton';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import { useDispatch, useSelector } from "react-redux";
-import { signupcreate } from '../../../../src/actions/auth';
+import { signupcreate, signup } from '../../../../src/actions/auth';
 import { createPatient, updatePatient, deletePatient } from '../../../actions/patients';
-
+import { createStore, applyMiddleware, bindActionCreators } from 'redux'
+import authReducer from "../../../reducers/auth";
+import thunk from 'redux-thunk';
+import {AUTHCREATE, CREATE_PASIEN} from "../../../constants/actionTypes";
 
 export default function PatTable() {
-    const dataAkun = useSelector((state) => state);
+    const posts = useSelector((state) => state);
     // console.log(patients);
+    // const createAkunDp = (data) => ({type: AUTHCREATE, payload: data});
+    // const createPasienDp = (data) => ({type: CREATE_PASIEN, payload: data});
+    // const createAkun = (data) => {
+    //
+    //     return dispatch(signupcreate(data));
+    // };
+    // const createPasien = (data) => {
+    //
+    //     return dispatch(createPatient(data));
+    // };
+
+    const dispatchChaining =  (data, dataPasien) => async (dispatch) => {
+        await Promise.all([
+            dispatch(signupcreate(data)),
+            // <-- async dispatch chaining in action
+        ]);
+        return dispatch(createPatient(dataPasien));
+    };
+    const store = createStore(authReducer, {}, applyMiddleware(thunk));
+    const actions = bindActionCreators({dispatchChaining}, store.dispatch);
 
     const [open, setOpen] = React.useState(false);
     const [patientData, setPatientData] = useState({
         firstName: '', lastName: '', bloodtype: '', height: '', weight: '', email: '', password: '', confirmPassword: '', role: 'Pasien'
     });
 
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
 
     // const handleInputChangePatient = event => {
     //     const { name, value } = event.target.value;
     //     setPatientData({ ...patientData, [name]: value });
     // };
-
-    const savePatientAccount = () => {
-
-    }
-
-
-
-
+    // function storePasienData(dataAkun, dataPasien) {
+    //     return (dispatch, getState) => {
+    //         dispatch({ type: 'AUTHCREATE', payload: dataAkun })
+    //         const stateAfter = getState()
+    //     };
+    // }
     function handleSubmit(e) {
         e.preventDefault();
 
@@ -59,13 +80,19 @@ export default function PatTable() {
             email: patientData.email
         };
 
-
-        // dispatch(signupcreate(data))
         // dispatch(createPatient(dataPatient))
+        // dispatch(signupcreate(data))
+        actions.dispatchChaining(data, dataPatient);
+        handleClose();
 
 
-        dispatch(signupcreate(dataPatient));
-        console.log(dataPatient);
+        // console.log(`Patient successfully created!`);
+        // console.log(`FName: ${this.state.firstname}`);
+        // console.log(`LName: ${this.state.lastname}`);
+        // console.log(`BloodType: ${this.state.bloodtype}`);
+        // console.log(`Height: ${this.state.height}`);
+        //
+        // this.setState({firstname: '', lastname: '', bloodtype: '', height: ''});
     };
 
     const handleClickOpen = () => {
