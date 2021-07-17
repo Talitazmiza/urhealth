@@ -62,6 +62,14 @@ const columns = [
         format: (value) => value.toFixed(2),
     },
     {
+        id: 'weight',
+        label: 'Weight(kg)',
+        minWidth: 150,
+        type: 'number',
+        align: 'center',
+        format: (value) => value.toFixed(2),
+    },
+    {
         id: 'user_data',
         label: 'E-mail',
         minWidth: 150,
@@ -77,8 +85,8 @@ const columns = [
 ];
 
 // createData dan rows kok gak bisa dihapus
-function createData(firstname, lastname, bloodtype, height, email, actions) {
-    return { firstname, lastname, bloodtype, height, email, actions };
+function createData(firstname, lastname, bloodtype, height, weight, email, actions) {
+    return { firstname, lastname, bloodtype, height, weight, email, actions };
 }
 
 const rows = [
@@ -100,7 +108,6 @@ export default function PatientTable() {
     const handleChange = (event) => {
         setCurrency(event.target.value);
     } ;
-
 
     const handleClickOpen = () => {
         setOpen(true);

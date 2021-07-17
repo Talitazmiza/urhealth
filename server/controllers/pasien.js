@@ -32,12 +32,12 @@ export const getAllPatient = async (req, res) => {
 
 // CREATE patients
 export const createPatient = async (req, res) => {
-    const { email, height, bloodtype, lastName, firstName } = req.body;
+    const { email, weight, height, bloodtype, lastName, firstName } = req.body;
     try {
         const existingUser = await UserModal.findOne({ email });
         if (!existingUser) return res.status(400).json({ message: "User tidak ada" });
 
-        const result = await Patient.create({ height, firstName, lastName, bloodtype, user_data : existingUser._id });
+        const result = await Patient.create({ email, height, weight,firstName, lastName, bloodtype, user_data : existingUser._id });
         res.status(200).json({ result });
     } catch (error) {
         res.status(500).json({ message: "Something went wrong" });

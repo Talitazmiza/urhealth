@@ -11,6 +11,7 @@ API.interceptors.request.use((req) => {
 
 export const signIn = (form) => API.post('/user/signin', form);
 export const signUp = (form) => API.post('/user/signup', form);
+export const signUpCreate = (form) => API.post('')
 
 ////// Patient API ///////
 export const getAllPatient = () => {

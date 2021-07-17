@@ -1,5 +1,5 @@
 // form
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import PatientTabel from './PatientTabel';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -11,16 +11,17 @@ import Button from "@material-ui/core/Button";
 import IconButton from '@material-ui/core/IconButton';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import { useDispatch, useSelector } from "react-redux";
+import { signupcreate } from '../../../../src/actions/auth';
 import { createPatient, updatePatient, deletePatient } from '../../../actions/patients';
 
 
 export default function PatTable() {
-    const patients = useSelector((state) => state.patients);
+    const dataAkun = useSelector((state) => state);
     // console.log(patients);
 
     const [open, setOpen] = React.useState(false);
     const [patientData, setPatientData] = useState({
-        firstname: '', lastname: '', bloodtype: '', height: '', email: '', password: '', confirmPassword: '', role: 'Pasien'
+        firstName: '', lastName: '', bloodtype: '', height: '', weight: '', email: '', password: '', confirmPassword: '', role: 'Pasien'
     });
 
     const dispatch = useDispatch();
@@ -30,23 +31,38 @@ export default function PatTable() {
     //     setPatientData({ ...patientData, [name]: value });
     // };
 
-    // const savePatientAccount = () => {
-    //     var data = {
-    //         email: patientData.email,
-    //         firstname: patientData.firstname,
-    //         lastname: patientData.lastname,
-    //         password: patientData.password,
-    //         confirmPassword: patientData.confirmPassword,
-    //         role: patientData.role
-    //     };
-    // }
+    const savePatientAccount = () => {
+
+    }
+
+
+
 
     function handleSubmit(e) {
         e.preventDefault();
 
-        dispatch(createPatient(patientData));
+        var data = {
+            email: patientData.email,
+            firstName: patientData.firstName,
+            lastName: patientData.lastName,
+            password: patientData.password,
+            confirmPassword: patientData.confirmPassword,
+            role: patientData.role
+        };
 
-        // console.log(`Patient successfully created!`);
+        var dataPatient = {
+            firstName: patientData.firstName,
+            lastName: patientData.lastName,
+            height: patientData.height,
+            weight: patientData.weight,
+            bloodtype: patientData.bloodtype,
+            email: patientData.email
+        };
+
+        // dispatch(createPatient(dataPatient))
+        // dispatch(signupcreate(data))
+        dispatch(signupcreate(dataPatient));
+        console.log(dataPatient);    // console.log(`Patient successfully created!`);
         // console.log(`FName: ${this.state.firstname}`);
         // console.log(`LName: ${this.state.lastname}`);
         // console.log(`BloodType: ${this.state.bloodtype}`);
@@ -82,15 +98,15 @@ export default function PatTable() {
                                     <DialogContentText>
                                         To add patient detail, please fill data here.
                                     </DialogContentText>
-                                    {/*<TextField*/}
-                                    {/*    autoFocus*/}
-                                    {/*    margin="dense"*/}
-                                    {/*    id="email"*/}
-                                    {/*    label="Email"*/}
-                                    {/*    type="text"*/}
-                                    {/*    fullWidth*/}
-                                    {/*    value={patientData.email} onChange={(e) => setPatientData({...patientData, email: e.target.value })}*/}
-                                    {/*/>*/}
+                                    <TextField
+                                        autoFocus
+                                        margin="dense"
+                                        id="email"
+                                        label="Email"
+                                        type="text"
+                                        fullWidth
+                                        value={patientData.email} onChange={(e) => setPatientData({...patientData, email: e.target.value })}
+                                    />
                                     <TextField
                                         autoFocus
                                         margin="dense"
@@ -98,7 +114,7 @@ export default function PatTable() {
                                         label="First Name"
                                         type="text"
                                         fullWidth
-                                        value={patientData.firstname} onChange={(e) => setPatientData({...patientData, firstname: e.target.value })}
+                                        value={patientData.firstName} onChange={(e) => setPatientData({...patientData, firstName: e.target.value })}
                                     />
                                     <TextField
                                         autoFocus
@@ -107,7 +123,7 @@ export default function PatTable() {
                                         label="Last Name"
                                         type="text"
                                         fullWidth
-                                        value={patientData.lastname} onChange={(e) => setPatientData({...patientData, lastname: e.target.value })}
+                                        value={patientData.lastName} onChange={(e) => setPatientData({...patientData, lastName: e.target.value })}
                                     />
                                     <TextField
                                         id="bloodtype"
@@ -126,6 +142,33 @@ export default function PatTable() {
                                         type="number"
                                         fullWidth
                                         value={patientData.height} onChange={(e) => setPatientData({...patientData, height: e.target.value })}
+                                    />
+                                    <TextField
+                                        autoFocus
+                                        margin="dense"
+                                        id="weight"
+                                        label="Weight"
+                                        type="number"
+                                        fullWidth
+                                        value={patientData.weight} onChange={(e) => setPatientData({...patientData, weight: e.target.value })}
+                                    />
+                                    <TextField
+                                        autoFocus
+                                        margin="dense"
+                                        id="password"
+                                        label="Password"
+                                        type="text"
+                                        fullWidth
+                                        value={patientData.password} onChange={(e) => setPatientData({...patientData, password: e.target.value })}
+                                    />
+                                    <TextField
+                                        autoFocus
+                                        margin="dense"
+                                        id="confirmPassword"
+                                        label="confirmPassword"
+                                        type="text"
+                                        fullWidth
+                                        value={patientData.confirmPassword} onChange={(e) => setPatientData({...patientData, confirmPassword: e.target.value })}
                                     />
                                 </DialogContent>
                                 <DialogActions>

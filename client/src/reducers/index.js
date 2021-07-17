@@ -6,7 +6,9 @@ import { combineReducers } from 'redux';
 // export const reducers = combineReducers({ posts, auth });
 
 import patients from './patients';
-export const reducers = combineReducers({ patients });
+import authReducer from './auth';
+import dataAkun from './create';
+export const reducers = combineReducers({ patients, authReducer, dataAkun });
 
 // liat line 9
 // aku kemaren nulisnya combineReducers((patients))

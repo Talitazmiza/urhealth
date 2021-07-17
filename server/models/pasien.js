@@ -5,6 +5,8 @@ const pasienSchema = mongoose.Schema({
     lastName: { type: String, required: true },
     bloodtype: { type: String, required: true },
     height: { type: Number, required: true },
+    weight: { type: Number, required: true },
+    password: { type: String, required: true },
     id: { type: String },
     user_data:
         {
