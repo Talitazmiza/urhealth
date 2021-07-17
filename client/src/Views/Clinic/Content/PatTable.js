@@ -59,16 +59,13 @@ export default function PatTable() {
             email: patientData.email
         };
 
-        // dispatch(createPatient(dataPatient))
+
         // dispatch(signupcreate(data))
+        // dispatch(createPatient(dataPatient))
+
+
         dispatch(signupcreate(dataPatient));
-        console.log(dataPatient);    // console.log(`Patient successfully created!`);
-        // console.log(`FName: ${this.state.firstname}`);
-        // console.log(`LName: ${this.state.lastname}`);
-        // console.log(`BloodType: ${this.state.bloodtype}`);
-        // console.log(`Height: ${this.state.height}`);
-        //
-        // this.setState({firstname: '', lastname: '', bloodtype: '', height: ''});
+        console.log(dataPatient);
     };
 
     const handleClickOpen = () => {
