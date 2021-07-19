@@ -11,9 +11,19 @@ import 'chart.js/dist/Chart';
 import Sidebar from "../Components/Sidebar";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
-import PatTable from "../Content/PatTable";
+import PatientAdd from "../Content/PatientAdd";
 
 function Patients() {
+
+    // track currentId
+
+    const [currentId, setCurrentId] = useState(null); // null bcs we don't have the id selected
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(getAllPatient());
+    }, [currentId, dispatch]);
+
     useEffect(() => {
         document.body.classList.add('hold-transition', 'sidebar-mini', 'layout-fixed');
         return function cleanup() {
@@ -24,7 +34,7 @@ function Patients() {
         <div>
             <Sidebar />
             <Navbar />
-            <PatTable />
+            <PatientAdd currentId={currentId} setCurrentId={setCurrentId}/>
             <Footer />
         </div>
     );

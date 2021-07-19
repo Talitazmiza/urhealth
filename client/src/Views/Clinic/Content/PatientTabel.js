@@ -94,16 +94,61 @@ const rows = [
 ];
 
 
-export default function PatientTable() {
+export default function PatientTable({ currentId, setCurrentId }) {
     const patients = useSelector((state) => state.patients);  // patients mengacu di reducers/indexjs
     const classes = useStyles();
     // console.log(patients);
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
-    const [ patient, setPatient ] = useState([]);
     const [open, setOpen] = React.useState(false);
     const [currency, setCurrency] = React.useState('O');
+
+    const [patientData, setPatientData] = useState({
+        firstName: '', lastName: '', bloodtype: '', height: '', weight: '', email: '', password: '', confirmPassword: '', role: 'Pasien'
+    });
+
+    const patient = useSelector((state) => currentId ? state.patients.find((p) => p._id === currentId) : null ); // to find spesific patient
+
+
+    // populate the values of the add form
+    useEffect(() => {
+        if(patient) setPatientData(patient); //setpatirnt populate with patient
+    }, [patient]);
+
+
+    function handleSubmit(e) {
+        e.preventDefault();
+
+        var data = {
+            email: patientData.email,
+            firstName: patientData.firstName,
+            lastName: patientData.lastName,
+            password: patientData.password,
+            confirmPassword: patientData.confirmPassword,
+            role: patientData.role
+        };
+
+        var dataPatient = {
+            firstName: patientData.firstName,
+            lastName: patientData.lastName,
+            height: patientData.height,
+            weight: patientData.weight,
+            bloodtype: patientData.bloodtype,
+            email: patientData.email
+        };
+
+        // dispatch(createPatient(dataPatient))
+        // dispatch(signupcreate(data))
+
+        if(currentId) {
+            dispatch(updatePatient(currentId, dataPatient))
+        } else {
+            actions.dispatchChaining(data, dataPatient);
+        }
+        clear();
+    };
+
 
     const handleChange = (event) => {
         setCurrency(event.target.value);
@@ -117,6 +162,10 @@ export default function PatientTable() {
         setOpen(false);
     };
 
+    const clear = () => {
+        setCurrentId(null);
+        setPatientData({ firstName: '', lastName: '', bloodtype: '', height: '', weight: '', email: '', password: '', confirmPassword: '', role: 'Pasien' });
+    }
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -187,42 +236,58 @@ export default function PatientTable() {
                                                                     To edit patient detail, please do some changes data here.
                                                                 </DialogContentText>
                                                                 <TextField
-                                                                    autofocus
+                                                                    autoFocus
                                                                     margin="dense"
-                                                                    id="first name"
-                                                                    onChange={handleChange}
+                                                                    id="email"
+                                                                    label="Email"
+                                                                    type="text"
+                                                                    fullWidth
+                                                                    value={patientData.email} onChange={(e) => setPatientData({...patientData, email: e.target.value })}
+                                                                />
+                                                                <TextField
+                                                                    autoFocus
+                                                                    margin="dense"
+                                                                    id="firstname"
                                                                     label="First Name"
                                                                     type="text"
                                                                     fullWidth
+                                                                    value={patientData.firstName} onChange={(e) => setPatientData({...patientData, firstName: e.target.value })}
                                                                 />
                                                                 <TextField
-                                                                    autofocus
+                                                                    autoFocus
                                                                     margin="dense"
-                                                                    id="last name"
-                                                                    onChange={handleChange}
+                                                                    id="lastname"
                                                                     label="Last Name"
                                                                     type="text"
                                                                     fullWidth
+                                                                    value={patientData.lastName} onChange={(e) => setPatientData({...patientData, lastName: e.target.value })}
                                                                 />
                                                                 <TextField
                                                                     id="bloodtype"
-                                                                    autofocus
+                                                                    autoFocus
                                                                     margin="dense"
-                                                                    onChange={handleChange}
                                                                     label="Blood Type"
                                                                     type="text"
                                                                     fullWidth
+                                                                    value={patientData.bloodtype} onChange={(e) => setPatientData({...patientData, bloodtype: e.target.value })}
                                                                 />
                                                                 <TextField
-                                                                    autofocus
+                                                                    autoFocus
                                                                     margin="dense"
                                                                     id="height"
                                                                     label="Height"
-                                                                    InputLabelProps={{
-                                                                        shrink: true,
-                                                                    }}
                                                                     type="number"
                                                                     fullWidth
+                                                                    value={patientData.height} onChange={(e) => setPatientData({...patientData, height: e.target.value })}
+                                                                />
+                                                                <TextField
+                                                                    autoFocus
+                                                                    margin="dense"
+                                                                    id="weight"
+                                                                    label="Weight"
+                                                                    type="number"
+                                                                    fullWidth
+                                                                    value={patientData.weight} onChange={(e) => setPatientData({...patientData, weight: e.target.value })}
                                                                 />
                                                             </DialogContent>
                                                             <DialogActions>

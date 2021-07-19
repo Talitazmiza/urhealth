@@ -18,7 +18,7 @@ import authReducer from "../../../reducers/auth";
 import thunk from 'redux-thunk';
 import {AUTHCREATE, CREATE_PASIEN} from "../../../constants/actionTypes";
 
-export default function PatTable() {
+export default function PatientAdd({ currentId, setCurrentId }) {
     const posts = useSelector((state) => state);
     // console.log(patients);
     // const createAkunDp = (data) => ({type: AUTHCREATE, payload: data});
@@ -47,6 +47,13 @@ export default function PatTable() {
         firstName: '', lastName: '', bloodtype: '', height: '', weight: '', email: '', password: '', confirmPassword: '', role: 'Pasien'
     });
 
+    const patient = useSelector((state) => currentId ? state.patients.find((p) => p._id === currentId) : null ); // to find spesific patient
+
+    // populate the values of the add form
+    useEffect(() => {
+        if(patient) setPatientData(patient);
+    }, [])
+
     // const dispatch = useDispatch();
 
     // const handleInputChangePatient = event => {
@@ -59,6 +66,7 @@ export default function PatTable() {
     //         const stateAfter = getState()
     //     };
     // }
+
     function handleSubmit(e) {
         e.preventDefault();
 
@@ -82,17 +90,13 @@ export default function PatTable() {
 
         // dispatch(createPatient(dataPatient))
         // dispatch(signupcreate(data))
-        actions.dispatchChaining(data, dataPatient);
-        handleClose();
 
-
-        // console.log(`Patient successfully created!`);
-        // console.log(`FName: ${this.state.firstname}`);
-        // console.log(`LName: ${this.state.lastname}`);
-        // console.log(`BloodType: ${this.state.bloodtype}`);
-        // console.log(`Height: ${this.state.height}`);
-        //
-        // this.setState({firstname: '', lastname: '', bloodtype: '', height: ''});
+        if(currentId) {
+            dispatch(updatePatient(currentId, dataPatient))
+        } else {
+            actions.dispatchChaining(data, dataPatient);
+        }
+        clear();
     };
 
     const handleClickOpen = () => {
@@ -102,6 +106,11 @@ export default function PatTable() {
     const handleClose = () => {
         setOpen(false);
     };
+
+    const clear = () => {
+        setCurrentId(null);
+        setPatientData({ firstName: '', lastName: '', bloodtype: '', height: '', weight: '', email: '', password: '', confirmPassword: '', role: 'Pasien' });
+    }
 
     return (
         <div className="content-wrapper">

@@ -1,7 +1,9 @@
-import { FETCH_ALL, CREATE } from '../constants/actionTypes';
+import { FETCH_ALL, CREATE, UPDATE } from '../constants/actionTypes';
 
 export default (patients = [], action) => {
     switch (action.type) {
+        case 'UPDATE':
+            return patients.map((patient) => patient._id === action.payload._id ? action.payload : patient);
         case 'FETCH_ALL':
             return action.payload;
         case 'CREATE':

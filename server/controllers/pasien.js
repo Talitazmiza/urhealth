@@ -48,14 +48,24 @@ export const createPatient = async (req, res) => {
 
 // UPDATE patients
 export const updatePatient = async (req, res) => {
-    const { id } = req.params;
-    const { email, height, bloodtype, lastName, firstName } = req.body;
+    const { id: _id } = req.params;
+    const { email, height, weight, firstName, lastName, bloodtype } = req.body;
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No patient with id: ${id}`);
     const existingUser = await UserModal.findOne({ email });
-    const updatedPatient = { height, firstName, lastName, bloodtype, user_data : existingUser._id, _id: id };
+    const updatedPatient = { email, height, weight, firstName, lastName, bloodtype, user_data : existingUser._id, _id: id };
     await Patient.findByIdAndUpdate(id, updatedPatient, { new: true });
     res.json(updatedPatient);
-}
+};
+
+// export const updatePatient = async (req, res) => {
+//     const { id: _id } = req.params;
+//     const patient = req.body;
+//     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No patient with id: ${id}`);
+//     const existingUser = await UserModal.findOne({ email });
+//     const updatedPatient = { email, height, weight, firstName, lastName, bloodtype, user_data : existingUser._id, _id: id };
+//     await Patient.findByIdAndUpdate(_id,{ ...patient, _id },{ new: true });
+//     res.json(updatedPatient);
+// }
 
 // DELETE patients
 export const deletePatient = async (req, res) => {
