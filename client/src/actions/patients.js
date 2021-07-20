@@ -5,7 +5,7 @@ export const getAllPatient = () => async (dispatch) => { // a function (async) t
     try {
         const { data } = await api.getAllPatient();
 
-        dispatch({ type: 'FETCH_ALL', payload: data });
+        dispatch({ type: 'FETCH_ALL', payload: data.result });
     } catch (error) {
         console.log(error);
     }
@@ -37,7 +37,7 @@ export const updatePatient = (id, patient) => async (dispatch) => {
     try {
         const res = await api.updatePatient(id, patient);
 
-        dispatch({ type: 'UPDATE_PATIENTS', payload: data });
+        dispatch({ type: 'UPDATE_PATIENTS', payload: res });
 
         return Promise.resolve(res.data);
     } catch (error) {
@@ -64,6 +64,8 @@ export const deletePatient = (id) => async (dispatch) => {
         console.log(error.message);
     }
 };
+
+
 
 
 // export const findTutorialsByEmail = (email) => async (dispatch) => {
