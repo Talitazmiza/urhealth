@@ -48,11 +48,10 @@ export const createPatient = async (req, res) => {
 
 // UPDATE patients
 export const updatePatient = async (req, res) => {
-    const { id: _id } = req.params;
-    const { email, height, weight, firstName, lastName, bloodtype } = req.body;
+    const { id } = req.params;
+    const { height, weight, firstName, lastName, bloodtype } = req.body;
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No patient with id: ${id}`);
-    const existingUser = await UserModal.findOne({ email });
-    const updatedPatient = { email, height, weight, firstName, lastName, bloodtype, user_data : existingUser._id, _id: id };
+    const updatedPatient = { height, weight, firstName, lastName, bloodtype};
     await Patient.findByIdAndUpdate(id, updatedPatient, { new: true });
     res.json(updatedPatient);
 };
