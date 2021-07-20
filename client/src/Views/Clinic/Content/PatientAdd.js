@@ -12,14 +12,90 @@ import IconButton from '@material-ui/core/IconButton';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import { useDispatch, useSelector } from "react-redux";
 import { signupcreate, signup } from '../../../../src/actions/auth';
-import { createPatient, updatePatient, deletePatient } from '../../../actions/patients';
+import {createPatient, updatePatient, deletePatient, getAllPatient} from '../../../actions/patients';
 import { createStore, applyMiddleware, bindActionCreators } from 'redux'
 import authReducer from "../../../reducers/auth";
 import thunk from 'redux-thunk';
 import {AUTHCREATE, CREATE_PASIEN} from "../../../constants/actionTypes";
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import {makeStyles} from "@material-ui/core";
+import TableContainer from "@material-ui/core/TableContainer";
+import Table from "@material-ui/core/Table";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import TableBody from "@material-ui/core/TableBody";
+import TablePagination from "@material-ui/core/TablePagination";
+import Paper from "@material-ui/core/Paper";
 
+const useStyles = makeStyles((theme) => ({
+    root: {
+        '& .MuiTextField-root': {
+            margin: theme.spacing(1),
+            width: '25ch',
+        },
+    },
+}));
+
+const columns = [
+    {
+        id: 'firstName',
+        label: 'First name',
+        align: 'center',
+        minWidth: 150
+
+    },
+    {
+        id: 'lastName',
+        label: 'Last name',
+        align: 'center',
+        minWidth: 100
+    },
+    {
+        id: 'bloodtype',
+        label: 'Blood type',
+        minWidth: 150,
+        align: 'center',
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: 'height',
+        label: 'Height(cm)',
+        minWidth: 150,
+        type: 'number',
+        align: 'center',
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: 'weight',
+        label: 'Weight(kg)',
+        minWidth: 150,
+        type: 'number',
+        align: 'center',
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: 'user_data',
+        label: 'E-mail',
+        minWidth: 150,
+        type: 'email',
+        align: 'center',
+    },
+    {
+        id: 'actions',
+        label: 'Actions',
+        minWidth: 150,
+        align: 'center',
+    },
+];
 export default function PatientAdd() {
+    const classes = useStyles();
+    const [page, setPage] = React.useState(0);
+    const [editMode, setEditMode] = React.useState(false);
+    const [currentId, setCurrentId] = React.useState(0);
 
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const dispatchChaining =  (data, dataPasien) => async (dispatch) => {
         await Promise.all([
             dispatch(signupcreate(data)),
@@ -27,9 +103,16 @@ export default function PatientAdd() {
         ]);
         return dispatch(createPatient(dataPasien));
     };
+    const dispatchChainingDelete =  (id) => async (dispatch) => {
+        await Promise.all([
+            dispatch(deletePatient(id)),
+            // <-- async dispatch chaining in action
+        ]);
+        return dispatch(getAllPatient());
+    };
 
     const store = createStore(authReducer, {}, applyMiddleware(thunk));
-    const actions = bindActionCreators({dispatchChaining}, store.dispatch);
+    const actions = bindActionCreators({dispatchChaining, dispatchChainingDelete}, store.dispatch);
 
     const [open, setOpen] = React.useState(false);
     const [patientData, setPatientData] = useState({
@@ -38,9 +121,20 @@ export default function PatientAdd() {
 
     const [submitted, setSubmitted] = useState(false);
 
+    const patients = useSelector((state) => state.patients);  // patients mengacu di reducers/indexjs
     const dispatch = useDispatch();
 
+    useEffect(() => {
+        dispatch(getAllPatient());
+    }, []);
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
 
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
+    };
 
     // const patient = useSelector((state) => currentId ? state.patients.find((p) => p._id === currentId) : null ); // to find spesific patient
     //
@@ -55,7 +149,7 @@ export default function PatientAdd() {
     };
 
     const savePatient = () => {
-        const { firstName, lastName, bloodtype, height, weight, email, password, confirmPassword } = patient;
+        const { firstName, lastName, bloodtype, height, weight, email, password, confirmPassword } = patientData;
 
         dispatch(createPatient(firstName, lastName, bloodtype, height, weight, email, password, confirmPassword))
             .then(data => {
@@ -80,8 +174,31 @@ export default function PatientAdd() {
     };
 
     const newPatient = () => {
-        setPatientData();
+        setEditMode(false);
+        clear();
+        setOpen(true);
+        // setPatientData();
         setSubmitted(false);
+    };
+    const editPatient = (data) => {
+        setOpen(true);
+        setEditMode(true);
+        setPatientData({
+            firstName: data.firstName,
+            lastName: data.lastName,
+            bloodtype: data.bloodtype,
+            height: data.height,
+            weight: data.weight,
+        });
+        setCurrentId(data._id);
+        setSubmitted(false);
+    };
+    const handleDeletePatient = (id) => {
+        dispatch(deletePatient(id));
+    };
+    const handleUpdatePatient = () => {
+        dispatch(updatePatient(currentId, patientData));
+        handleClose();
     };
 
     // function storePasienData(dataAkun, dataPasien) {
@@ -115,11 +232,11 @@ export default function PatientAdd() {
         // dispatch(createPatient(dataPatient))
         // dispatch(signupcreate(data))
 
-        if(currentId) {
-            dispatch(updatePatient(currentId, dataPatient))
-        } else {
+        // if(currentId) {
+        //     dispatch(updatePatient(currentId, dataPatient))
+        // } else {
             actions.dispatchChaining(data, dataPatient);
-        }
+        // }
         clear();
     };
 
@@ -132,7 +249,6 @@ export default function PatientAdd() {
     };
 
     const clear = () => {
-        setCurrentId(null);
         setPatientData({ firstName: '', lastName: '', bloodtype: '', height: '', weight: '', email: '', password: '', confirmPassword: '', role: 'Pasien' });
     }
 
@@ -156,6 +272,8 @@ export default function PatientAdd() {
                                         To add patient detail, please fill data here.
                                     </DialogContentText>
                                     <TextField
+                                        disabled={editMode === true ? true : false}
+                                        hidden={editMode === true ? true : false}
                                         autoFocus
                                         margin="dense"
                                         id="email"
@@ -210,6 +328,8 @@ export default function PatientAdd() {
                                         value={patientData.weight} onChange={(e) => setPatientData({...patientData, weight: e.target.value })}
                                     />
                                     <TextField
+                                        disabled={editMode === true ? true : false}
+                                        hidden={editMode === true ? true : false}
                                         autoFocus
                                         margin="dense"
                                         id="password"
@@ -219,6 +339,8 @@ export default function PatientAdd() {
                                         value={patientData.password} onChange={(e) => setPatientData({...patientData, password: e.target.value })}
                                     />
                                     <TextField
+                                        disabled={editMode === true ? true : false}
+                                        hidden={editMode === true ? true : false}
                                         autoFocus
                                         margin="dense"
                                         id="confirmPassword"
@@ -232,7 +354,7 @@ export default function PatientAdd() {
                                     <Button onClick={handleClose} variant="outlined" color="secondary">
                                         Cancel
                                     </Button>
-                                    <Button onClick={savePatient} variant="outlined" color="primary" type="submit" fullWidth>
+                                    <Button onClick={editMode === true ? handleUpdatePatient : handleSubmit} variant="outlined" color="primary" type="submit" fullWidth>
                                         Add
                                     </Button>
                                 </DialogActions>
@@ -246,7 +368,69 @@ export default function PatientAdd() {
                 <div className="container-fluid">
                     <div className="row">
                         <div className="col-lg-12">
-                            <PatientTabel />
+                            <Paper className={classes.root}>
+                                <TableContainer className={classes.container}>
+                                    <Table stickyHeader aria-label="sticky table">
+                                        <TableHead>
+                                            <TableRow>
+                                                {columns.map((column) => (
+                                                    <TableCell
+                                                        key={column.id}
+                                                        align={column.align}
+                                                        style={{ minWidth: column.minWidth }}
+                                                    >
+                                                        {column.label}
+                                                    </TableCell>
+                                                ))}
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {patients && patients.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                                                return (
+                                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                                        {columns.map((column) => {
+                                                            if (column.id != 'actions') {
+                                                                let value = row[column.id];
+                                                                if (column.id == 'user_data') {
+                                                                    value = row[column.id]['email'];
+                                                                }
+                                                                return (
+                                                                    <TableCell key={column.id} align={column.align}>
+                                                                        {column.format && typeof value == 'number' ? column.format(value) : value}
+                                                                    </TableCell>
+                                                                );
+                                                            } else  {
+                                                                return  (
+                                                                    <TableCell key={column.id} align={column.align}>
+                                                                        <div>
+                                                                            <IconButton onClick={()=>editPatient(row)} aria-label="delete" className={classes.margin}>
+                                                                                <EditIcon />
+                                                                            </IconButton>
+                                                                            {/*edit patient pop up*/}
+                                                                            <IconButton onClick={()=>handleDeletePatient(row['_id'])} aria-label="delete" className={classes.margin}>
+                                                                                <DeleteIcon />
+                                                                            </IconButton>
+                                                                        </div>
+                                                                    </TableCell>
+                                                                );
+                                                            }
+                                                        })}
+                                                    </TableRow>
+                                                );
+                                            })}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                                <TablePagination
+                                    rowsPerPageOptions={[2, 5, 10]}
+                                    component="div"
+                                    count={patients.length}
+                                    rowsPerPage={rowsPerPage}
+                                    page={page}
+                                    onPageChange={handleChangePage}
+                                    onRowsPerPageChange={handleChangeRowsPerPage}
+                                />
+                            </Paper>
                         </div>
                     </div>
                 </div>
