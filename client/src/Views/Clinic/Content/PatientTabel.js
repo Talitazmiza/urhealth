@@ -1,5 +1,9 @@
 // post
 import React, { useState, useEffect} from 'react';
+import { useSelector, useDispatch } from "react-redux";
+import * as api from '../../../api';
+// import { getAllPatient } from '../../../api';
+import { getAllPatient, deletePatient, updatePatient } from '../../../actions/patients';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -10,7 +14,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import "bootstrap/dist/css/bootstrap.min.css";
-import { getAllPatient } from '../../../api'
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
@@ -21,7 +24,6 @@ import Dialog from "@material-ui/core/Dialog";
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -88,34 +90,96 @@ const columns = [
 function createData(firstname, lastname, bloodtype, height, weight, email, actions) {
     return { firstname, lastname, bloodtype, height, weight, email, actions };
 }
-
 const rows = [
     createData('Diana', 'Fitri', 'A', 160),
 ];
 
-
-export default function PatientTable({ currentId, setCurrentId }) {
-    const patients = useSelector((state) => state.patients);  // patients mengacu di reducers/indexjs
+export default function PatientTable(props) {
     const classes = useStyles();
-    // console.log(patients);
-
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [open, setOpen] = React.useState(false);
-    const [currency, setCurrency] = React.useState('O');
+    const initialPatientState = {
+        id: null,
+        firstName: '',
+        lastName: '',
+        bloodtype: '',
+        height: '',
+        weight: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        role: 'Pasien'
+    };
+    // const [currentPatient, setCurrentPatient] = useState(null);
+    const [currentPatient, setCurrentPatient] = useState(initialPatientState);
+    const [currentIndex, setCurrentindex] = useState(-1);
+    const [patientData, setPatientData] = useState();
+    const [message, setMessage] = useState("");
 
-    const [patientData, setPatientData] = useState({
-        firstName: '', lastName: '', bloodtype: '', height: '', weight: '', email: '', password: '', confirmPassword: '', role: 'Pasien'
-    });
+    // To connect the Redux store with local Component state and props, we use useSelector() and useDispatch()
+    const patients = useSelector((state) => state.patients);  // patients mengacu di reducers/indexjs
+    const dispatch = useDispatch();
+    // console.log(patients);
 
-    const patient = useSelector((state) => currentId ? state.patients.find((p) => p._id === currentId) : null ); // to find spesific patient
+    const getPatient = id => {
+        api.get(id)
+            .then(response => {
+                setCurrentPatient(response.data);
+                console.log(response.data);
+            })
+            .catch(e => {
+                console.log(e);
+            });
+    };
+
+    useEffect(() => {
+        getPatient(props.match.params.id);
+    }, [props.match.params.id]);
+
+    const handleInputChange = event => {
+        const {name, value} = event.target.value;
+        setCurrentPatient({...currentPatient, [name]: value});
+    };
+
+    // useEffect(() => {
+    //     dispatch(getAllPatient());
+    // }, []);
+
+    const refreshData = () => {
+        setCurrentPatient(null);
+        setCurrentId(-1);
+    };
+
+    const updateContent = () => {
+        dispatch(updatePatient(currentPatient.id, currentPatient))
+            .then(response => {
+                console.log(response);
+
+                setMessage("patient updated successfully");
+            })
+            .catch(e => {
+                console.log(e);
+            });
+    };
+
+    const deletePatient = () => {
+      dispatch(deletePatient(currentPatient.id))
+          .then(() => {
+              props.history.push('/patient/:id');
+          })
+          .catch(e => {
+              console.log(e);
+          });
+    };
+
+    // const patient = useSelector((state) => currentId ? state.patients.find((p) => p._id === currentId) : null ); // to find spesific patient
 
 
     // populate the values of the add form
-    useEffect(() => {
-        if(patient) setPatientData(patient); //setpatirnt populate with patient
-    }, [patient]);
-
+    // useEffect(() => {
+    //     if(patient) setPatientData(patient); //setpatirnt populate with patient
+    // }, [patient]);
 
     function handleSubmit(e) {
         e.preventDefault();
@@ -150,9 +214,9 @@ export default function PatientTable({ currentId, setCurrentId }) {
     };
 
 
-    const handleChange = (event) => {
-        setCurrency(event.target.value);
-    } ;
+    // const handleChange = (event) => {
+    //     setCurrency(event.target.value);
+    // } ;
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -189,6 +253,7 @@ export default function PatientTable({ currentId, setCurrentId }) {
         retrievePatient();
     }, []);
 
+
     return (
         <Paper className={classes.root}>
             <TableContainer className={classes.container}>
@@ -207,7 +272,7 @@ export default function PatientTable({ currentId, setCurrentId }) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {patient.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                        {patients.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                             return (
                                 <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                                     {columns.map((column) => {
@@ -242,7 +307,8 @@ export default function PatientTable({ currentId, setCurrentId }) {
                                                                     label="Email"
                                                                     type="text"
                                                                     fullWidth
-                                                                    value={patientData.email} onChange={(e) => setPatientData({...patientData, email: e.target.value })}
+                                                                    value={currentPatient.email}
+                                                                    onChange={handleInputChange}
                                                                 />
                                                                 <TextField
                                                                     autoFocus
@@ -251,7 +317,8 @@ export default function PatientTable({ currentId, setCurrentId }) {
                                                                     label="First Name"
                                                                     type="text"
                                                                     fullWidth
-                                                                    value={patientData.firstName} onChange={(e) => setPatientData({...patientData, firstName: e.target.value })}
+                                                                    value={currentPatient.firstName}
+                                                                    onChange={handleInputChange}
                                                                 />
                                                                 <TextField
                                                                     autoFocus
@@ -260,7 +327,8 @@ export default function PatientTable({ currentId, setCurrentId }) {
                                                                     label="Last Name"
                                                                     type="text"
                                                                     fullWidth
-                                                                    value={patientData.lastName} onChange={(e) => setPatientData({...patientData, lastName: e.target.value })}
+                                                                    value={currentPatient.lastName}
+                                                                    onChange={handleInputChange}
                                                                 />
                                                                 <TextField
                                                                     id="bloodtype"
@@ -269,7 +337,8 @@ export default function PatientTable({ currentId, setCurrentId }) {
                                                                     label="Blood Type"
                                                                     type="text"
                                                                     fullWidth
-                                                                    value={patientData.bloodtype} onChange={(e) => setPatientData({...patientData, bloodtype: e.target.value })}
+                                                                    value={currentPatient.bloodtype}
+                                                                    onChange={handleInputChange}
                                                                 />
                                                                 <TextField
                                                                     autoFocus
@@ -278,7 +347,8 @@ export default function PatientTable({ currentId, setCurrentId }) {
                                                                     label="Height"
                                                                     type="number"
                                                                     fullWidth
-                                                                    value={patientData.height} onChange={(e) => setPatientData({...patientData, height: e.target.value })}
+                                                                    value={currentPatient.height}
+                                                                    onChange={handleInputChange}
                                                                 />
                                                                 <TextField
                                                                     autoFocus
@@ -287,19 +357,20 @@ export default function PatientTable({ currentId, setCurrentId }) {
                                                                     label="Weight"
                                                                     type="number"
                                                                     fullWidth
-                                                                    value={patientData.weight} onChange={(e) => setPatientData({...patientData, weight: e.target.value })}
-                                                                />
+                                                                    value={currentPatient.weight}
+                                                                    onChange={handleInputChange}
+                                                                    />
                                                             </DialogContent>
                                                             <DialogActions>
                                                                 <Button onClick={handleClose} variant="outlined" color="secondary">
                                                                     Cancel
                                                                 </Button>
-                                                                <Button onClick={handleClose} variant="outlined" color="primary">
+                                                                <Button onClick={updateContent} variant="outlined" color="primary">
                                                                     Update
                                                                 </Button>
                                                             </DialogActions>
                                                         </Dialog>
-                                                        <IconButton aria-label="delete" className={classes.margin}>
+                                                        <IconButton onClick={deletePatient} aria-label="delete" className={classes.margin}>
                                                             <DeleteIcon />
                                                         </IconButton>
                                                     </div>

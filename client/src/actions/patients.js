@@ -1,5 +1,5 @@
 import * as api from '../api';
-import {CREATE, FETCH_ALL, UPDATE, DELETE} from "../constants/actionTypes";
+import {CREATE_PATIENTS, FETCH_ALL, UPDATE_PATIENTS, DELETE_PATIENTS} from "../constants/actionTypes";
 
 export const getAllPatient = () => async (dispatch) => { // a function (async) that returns another function (dispatch)
     try {
@@ -13,30 +13,68 @@ export const getAllPatient = () => async (dispatch) => { // a function (async) t
 
 export const createPatient = (patient) => async (dispatch) => {
     try {
-        const { data } = await api.createPatient(patient);
+        const res = await api.createPatient(patient);
 
-        dispatch({ type: 'CREATE', payload: data });
+        dispatch({ type: 'CREATE_PATIENTS', payload: res.data });
+
+        return Promise.resolve(res.data);
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
+
+// export const createPatient = (patient) => async (dispatch) => {
+//     try {
+//         const { data } = await api.createPatient(patient);
+//
+//         dispatch({ type: 'CREATE_PATIENTS', payload: data });
+//     } catch (error) {
+//         console.log(error);
+//     }
+// };
 
 export const updatePatient = (id, patient) => async (dispatch) => {
     try {
-        const { data } = await api.updatePatient(id, patient);
+        const res = await api.updatePatient(id, patient);
 
-        dispatch({ type: 'UPDATE', payload: data });
+        dispatch({ type: 'UPDATE_PATIENTS', payload: data });
+
+        return Promise.resolve(res.data);
     } catch (error) {
-        console.log(error.message);
+        return Promise.reject(error.message);
     }
 };
+
+// export const updatePatient = (id, patient) => async (dispatch) => {
+//     try {
+//         const { data } = await api.updatePatient(id, patient);
+//
+//         dispatch({ type: 'UPDATE_PATIENTS', payload: data });
+//     } catch (error) {
+//         console.log(error.message);
+//     }
+// };
 
 export const deletePatient = (id) => async (dispatch) => {
     try {
         await api.deletePatient(id);
 
-        dispatch({ type: DELETE, payload: id });
+        dispatch({ type: 'DELETE_PATIENTS', payload: { id } });
     } catch (error) {
         console.log(error.message);
     }
 };
+
+
+// export const findTutorialsByEmail = (email) => async (dispatch) => {
+//     try {
+//         const res = await TutorialDataService.findBy(email);
+//
+//         dispatch({
+//             type: RETRIEVE_TUTORIALS,
+//             payload: res.data,
+//         });
+//     } catch (err) {
+//         console.log(err);
+//     }
+// };

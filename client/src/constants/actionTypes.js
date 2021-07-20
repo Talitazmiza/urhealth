@@ -1,6 +1,6 @@
-export const CREATE = 'CREATE';
-export const UPDATE = 'UPDATE';
-export const DELETE = 'DELETE';
+export const CREATE_PATIENTS = 'CREATE_PATIENTS';
+export const UPDATE_PATIENTS = 'UPDATE_PATIENTS';
+export const DELETE_PATIENTS = 'DELETE';
 export const FETCH_ALL = 'FETCH_ALL';
 export const LIKE = 'LIKE';
 export const AUTH = 'AUTH';

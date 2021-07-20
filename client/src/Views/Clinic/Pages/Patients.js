@@ -1,4 +1,6 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
+import { useDispatch } from "react-redux";
+import { getAllPatient } from '../../../actions/patients';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'jquery/dist/jquery.min';
@@ -17,12 +19,12 @@ function Patients() {
 
     // track currentId
 
-    const [currentId, setCurrentId] = useState(null); // null bcs we don't have the id selected
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(getAllPatient());
-    }, [currentId, dispatch]);
+    // const [currentId, setCurrentId] = useState(null); // null bcs we don't have the id selected
+    // const dispatch = useDispatch();
+    //
+    // useEffect(() => {
+    //     dispatch(getAllPatient());
+    // }, [currentId, dispatch]);
 
     useEffect(() => {
         document.body.classList.add('hold-transition', 'sidebar-mini', 'layout-fixed');
@@ -30,11 +32,12 @@ function Patients() {
             document.body.classList.remove('hold-transition', 'sidebar-mini', 'layout-fixed');
         };
     }, []);
+
     return (
         <div>
             <Sidebar />
             <Navbar />
-            <PatientAdd currentId={currentId} setCurrentId={setCurrentId}/>
+            <PatientAdd />
             <Footer />
         </div>
     );

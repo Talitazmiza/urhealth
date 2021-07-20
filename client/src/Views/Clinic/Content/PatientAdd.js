@@ -18,19 +18,7 @@ import authReducer from "../../../reducers/auth";
 import thunk from 'redux-thunk';
 import {AUTHCREATE, CREATE_PASIEN} from "../../../constants/actionTypes";
 
-export default function PatientAdd({ currentId, setCurrentId }) {
-    const posts = useSelector((state) => state);
-    // console.log(patients);
-    // const createAkunDp = (data) => ({type: AUTHCREATE, payload: data});
-    // const createPasienDp = (data) => ({type: CREATE_PASIEN, payload: data});
-    // const createAkun = (data) => {
-    //
-    //     return dispatch(signupcreate(data));
-    // };
-    // const createPasien = (data) => {
-    //
-    //     return dispatch(createPatient(data));
-    // };
+export default function PatientAdd() {
 
     const dispatchChaining =  (data, dataPasien) => async (dispatch) => {
         await Promise.all([
@@ -39,6 +27,7 @@ export default function PatientAdd({ currentId, setCurrentId }) {
         ]);
         return dispatch(createPatient(dataPasien));
     };
+
     const store = createStore(authReducer, {}, applyMiddleware(thunk));
     const actions = bindActionCreators({dispatchChaining}, store.dispatch);
 
@@ -47,19 +36,54 @@ export default function PatientAdd({ currentId, setCurrentId }) {
         firstName: '', lastName: '', bloodtype: '', height: '', weight: '', email: '', password: '', confirmPassword: '', role: 'Pasien'
     });
 
-    const patient = useSelector((state) => currentId ? state.patients.find((p) => p._id === currentId) : null ); // to find spesific patient
+    const [submitted, setSubmitted] = useState(false);
 
-    // populate the values of the add form
-    useEffect(() => {
-        if(patient) setPatientData(patient);
-    }, [])
+    const dispatch = useDispatch();
 
-    // const dispatch = useDispatch();
 
-    // const handleInputChangePatient = event => {
-    //     const { name, value } = event.target.value;
-    //     setPatientData({ ...patientData, [name]: value });
-    // };
+
+    // const patient = useSelector((state) => currentId ? state.patients.find((p) => p._id === currentId) : null ); // to find spesific patient
+    //
+    // // populate the values of the add form
+    // useEffect(() => {
+    //     if(patient) setPatientData(patient);
+    // }, [])
+
+    const handleInputChangePatient = event => {
+        const { name, value } = event.target.value;
+        setPatientData({ ...patientData, [name]: value });
+    };
+
+    const savePatient = () => {
+        const { firstName, lastName, bloodtype, height, weight, email, password, confirmPassword } = patient;
+
+        dispatch(createPatient(firstName, lastName, bloodtype, height, weight, email, password, confirmPassword))
+            .then(data => {
+                setPatientData({
+                    id: data.id,
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                    bloodtype: data.bloodtype,
+                    height: data.height,
+                    weight: data.weight,
+                    email: data.email,
+                    password: data.password,
+                    confirmPassword: data.confirmPassword
+                });
+                setSubmitted(true);
+                actions.dispatchChaining(data, dataPatient);
+                console.log(data);
+            })
+            .catch(e => {
+                console.log(e);
+            });
+    };
+
+    const newPatient = () => {
+        setPatientData();
+        setSubmitted(false);
+    };
+
     // function storePasienData(dataAkun, dataPasien) {
     //     return (dispatch, getState) => {
     //         dispatch({ type: 'AUTHCREATE', payload: dataAkun })
@@ -121,7 +145,7 @@ export default function PatientAdd({ currentId, setCurrentId }) {
                             <h1 className="m-0">Patients</h1>
                         </div>
                         <div className="col-sm-6">
-                            <IconButton onClick={handleClickOpen} aria-label="create" className="float-right">
+                            <IconButton onClick={newPatient} aria-label="create" className="float-right">
                                 <AddBoxIcon />
                             </IconButton>
                             {/*create patient pop up*/}
@@ -208,7 +232,7 @@ export default function PatientAdd({ currentId, setCurrentId }) {
                                     <Button onClick={handleClose} variant="outlined" color="secondary">
                                         Cancel
                                     </Button>
-                                    <Button onClick={handleSubmit} variant="outlined" color="primary" type="submit" fullWidth>
+                                    <Button onClick={savePatient} variant="outlined" color="primary" type="submit" fullWidth>
                                         Add
                                     </Button>
                                 </DialogActions>
