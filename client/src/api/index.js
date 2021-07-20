@@ -27,7 +27,7 @@ export const createPatient = (data) => {
 };
 
 export const updatePatient = (id, updatedPatient) => {
-  return axios.put('http://localhost:5000/patient/update/:id', updatedPatient);
+  return axios.put('http://localhost:5000/patient/update/'+id, updatedPatient);
 };
 
 // export const updatePatient = (id, updatedPatient) => {
@@ -35,7 +35,7 @@ export const updatePatient = (id, updatedPatient) => {
 // };
 
 export const deletePatient = (id) => {
-  return axios.delete('http://localhost:5000/patient/:id');
+  return axios.delete('http://localhost:5000/patient/delete/'+id);
 };
 
 // export const getPatients = () => axios.get('http://localhost:5000/patient/all');
