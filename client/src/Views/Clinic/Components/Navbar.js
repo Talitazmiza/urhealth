@@ -10,14 +10,6 @@ function Navbar() {
                 </li>
             </ul>
             <ul className="navbar-nav ml-auto" >
-                <div className="searchBox">
-                    <input className="searchInput" type="text" name="" placeholder="Search" />
-                    <button className="searchButton" href="#">
-                        <i className="material-icons">
-                            search
-                        </i>
-                    </button>
-                </div>
                 <div className="pull-right">
                     <a href="/" className="btn btn-default btn-twitter">Sign out</a>
                 </div>

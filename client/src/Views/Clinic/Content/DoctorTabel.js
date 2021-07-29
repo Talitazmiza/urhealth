@@ -9,7 +9,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import "bootstrap/dist/css/bootstrap.min.css";
-import {getDoctor} from '../../../api'
+import { getAllDoctor } from '../../../api'
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
@@ -123,7 +123,7 @@ export default function DoctorTable() {
     };
 
     const retrieveDoctor = () => {
-        getDoctor()
+        getAllDoctor()
             .then(response => {
                 setDoctor(response.data.result);
             })

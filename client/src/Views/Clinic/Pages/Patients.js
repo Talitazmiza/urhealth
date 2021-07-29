@@ -13,7 +13,7 @@ import 'chart.js/dist/Chart';
 import Sidebar from "../Components/Sidebar";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
-import PatientAdd from "../Content/PatientAdd";
+import PatientList from "../Content/PatientList";
 
 function Patients() {
 
@@ -37,7 +37,7 @@ function Patients() {
         <div>
             <Sidebar />
             <Navbar />
-            <PatientAdd />
+            <PatientList />
             <Footer />
         </div>
     );

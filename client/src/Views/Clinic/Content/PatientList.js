@@ -89,7 +89,7 @@ const columns = [
         align: 'center',
     },
 ];
-export default function PatientAdd() {
+export default function PatientList() {
     const classes = useStyles();
     const [page, setPage] = React.useState(0);
     const [editMode, setEditMode] = React.useState(false);
@@ -235,7 +235,7 @@ export default function PatientAdd() {
         // if(currentId) {
         //     dispatch(updatePatient(currentId, dataPatient))
         // } else {
-            actions.dispatchChaining(data, dataPatient);
+        actions.dispatchChaining(data, dataPatient);
         // }
         clear();
     };
