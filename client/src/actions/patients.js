@@ -1,11 +1,11 @@
 import * as api from '../api';
-import {CREATE_PATIENTS, FETCH_ALL, UPDATE_PATIENTS, DELETE_PATIENTS} from "../constants/actionTypes";
+import {CREATE_PATIENTS, FETCH_ALL_PATIENTS, UPDATE_PATIENTS, DELETE_PATIENTS} from "../constants/actionTypes";
 
 export const getAllPatient = () => async (dispatch) => { // a function (async) that returns another function (dispatch)
     try {
         const { data } = await api.getAllPatient();
 
-        dispatch({ type: 'FETCH_ALL', payload: data.result });
+        dispatch({ type: 'FETCH_ALL_PATIENTS', payload: data.result });
     } catch (error) {
         console.log(error);
     }
@@ -23,15 +23,6 @@ export const createPatient = (patient) => async (dispatch) => {
     }
 };
 
-// export const createPatient = (patient) => async (dispatch) => {
-//     try {
-//         const { data } = await api.createPatient(patient);
-//
-//         dispatch({ type: 'CREATE_PATIENTS', payload: data });
-//     } catch (error) {
-//         console.log(error);
-//     }
-// };
 
 export const updatePatient = (id, patient) => async (dispatch) => {
     try {
@@ -45,15 +36,6 @@ export const updatePatient = (id, patient) => async (dispatch) => {
     }
 };
 
-// export const updatePatient = (id, patient) => async (dispatch) => {
-//     try {
-//         const { data } = await api.updatePatient(id, patient);
-//
-//         dispatch({ type: 'UPDATE_PATIENTS', payload: data });
-//     } catch (error) {
-//         console.log(error.message);
-//     }
-// };
 
 export const deletePatient = (id) => async (dispatch) => {
     try {
@@ -64,8 +46,6 @@ export const deletePatient = (id) => async (dispatch) => {
         console.log(error.message);
     }
 };
-
-
 
 
 // export const findTutorialsByEmail = (email) => async (dispatch) => {
