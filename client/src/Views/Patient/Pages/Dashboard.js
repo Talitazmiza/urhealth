@@ -29,7 +29,6 @@ function Dashboard() {
             <Footer />
             <aside className="control-sidebar control-sidebar-dark"/>
         </div>
-
     );
 }
 
