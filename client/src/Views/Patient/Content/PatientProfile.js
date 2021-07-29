@@ -8,6 +8,7 @@ import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker,
 } from '@material-ui/pickers';
+import {getPasienProfil} from "../../../api";
 
 
 
@@ -28,7 +29,23 @@ export default function PatientProfile() {
 
         setValidated(true);
     };
+    const userProfile = JSON.parse(localStorage.getItem('profile'));
+    const [dataPasien, setdataPasien] = useState({});
+    const [dataAkun, setdataAkun] = useState({});
 
+    const retrieveProfil = () => {
+        getPasienProfil(userProfile.result.id)
+            .then(response => {
+                setdataAkun(response.data.result.user_data);
+                setdataPasien(response.data.result);
+            })
+            .catch(e => {
+                console.log(e);
+            });
+    }
+    useEffect(() => {
+        retrieveProfil();
+    }, []);
     return (
         <div className="content-wrapper">
             <div className="content-header">
@@ -65,7 +82,7 @@ export default function PatientProfile() {
                                                         <Form.Control
                                                             plaintext
                                                             readOnly
-                                                            value="pody"
+                                                            value={dataPasien.firstName}
                                                         />
                                                     </Form.Group>
                                                     <Form.Group as={Col} md="4" controlId="validationCustomUsername">
@@ -73,7 +90,7 @@ export default function PatientProfile() {
                                                         <Form.Control
                                                             plaintext
                                                             readOnly
-                                                            value="simpson"
+                                                            value={dataPasien.lastName}
                                                         />
                                                     </Form.Group>
                                                     <Form.Group as={Col} md="4" controlId="validationCustomUsername">
@@ -81,7 +98,7 @@ export default function PatientProfile() {
                                                         <Form.Control
                                                             plaintext
                                                             readOnly
-                                                            value="pody@gmail.com"
+                                                            value={dataAkun.email}
                                                         />
                                                     </Form.Group>
                                                 </Row>
