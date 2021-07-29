@@ -86,3 +86,32 @@ export const getGraph = async (req, res) => {
         res.status(404).json({ message: error.message });
     }
 }
+
+export const patientProfile = async (req, res) => {
+    const { id } = req.params;
+    const user_data = id;
+    try {
+        Patient.findOne({user_data}).populate(
+            {
+                path: 'user_data',
+                populate: {
+                    path: 'role',
+                }
+            }
+        ).exec((err, patient)=> {
+            if (err) {
+                res.status(500).send({ message: err });
+                return;
+            }
+            if (!patient) {
+                return res.status(404).json({ message: "patient doesn't exist" });
+            }
+            res.status(200).send({
+                result : patient
+            });
+        });
+
+    } catch (error) {
+        res.status(404).json({ message: error.message });
+    }
+};
