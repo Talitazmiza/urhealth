@@ -3,7 +3,7 @@ import Doctor from '../models/doctor.js';
 import UserModal from '../models/user.js';
 
 // READ doctors
-export const getAllDoctors = async (req, res) => {
+export const getAllDoctor = async (req, res) => {
     try {
         Doctor.find().populate(
             {

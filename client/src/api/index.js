@@ -18,7 +18,7 @@ export const getAllPatient = () => {
   return axios.get('http://localhost:5000/patient/all');
 };
 
-export const get = (id) => {
+export const getPat = (id) => {
   return axios.get('http://localhost:5000/patient/:id');
 };
 
@@ -30,24 +30,31 @@ export const updatePatient = (id, updatedPatient) => {
   return axios.put('http://localhost:5000/patient/update/'+id, updatedPatient);
 };
 
-// export const updatePatient = (id, updatedPatient) => {
-//   return axios.put('http://localhost:5000/patient/:id', updatedPatient);
-// };
-
 export const deletePatient = (id) => {
   return axios.delete('http://localhost:5000/patient/delete/'+id);
 };
 
-// export const getPatients = () => axios.get('http://localhost:5000/patient/all');
-// export const createPatients = (data) => axios.post('http://localhost:5000/patient/create', data);
+
 
 /////// Doctor API //////
-export const getDoctor = () => {
+export const getAllDoctor = () => {
   return axios.get('http://localhost:5000/doctor/all');
+};
+
+export const getDoc = (id) => {
+  return axios.get('http://localhost:5000/doctor/:id');
 };
 
 export const createDoctor = (data) => {
   return axios.post('http://localhost:5000/doctor/create', data);
+};
+
+export const updateDoctor = (id, updatedDoctor) => {
+  return axios.put('http://localhost:5000/doctor/update/'+id, updatedDoctor);
+};
+
+export const deleteDoctor = (id) => {
+  return axios.delete('http://localhost:5000/doctor/delete/'+id);
 };
 
 export const getGraph = () => API.get('http://localhost:5000/patient/alldata');

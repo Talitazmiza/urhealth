@@ -1,9 +1,9 @@
 import express from "express";
 const router = express.Router();
 
-import { getAllDoctors, createDoctor, deleteDoctor, updateDoctor, updateDoctorProfile } from "../controllers/doctor.js";
+import { getAllDoctor, createDoctor, deleteDoctor, updateDoctor, updateDoctorProfile } from "../controllers/doctor.js";
 
-router.get("/all", getAllDoctors);
+router.get("/all", getAllDoctor);
 router.post("/create", createDoctor);
 router.put("/update/:id", updateDoctor);
 router.put("/update-profile/:id", updateDoctorProfile);

@@ -11,7 +11,7 @@ import 'chart.js/dist/Chart';
 import Sidebar from "../Components/Sidebar";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
-import DocTable from "../Content/DocTable";
+import DoctorList from "../Content/DoctorList";
 
 function Doctors() {
     useEffect(() => {
@@ -24,7 +24,7 @@ function Doctors() {
         <div>
             <Sidebar />
             <Navbar />
-            <DocTable />
+            <DoctorList />
             <Footer />
         </div>
     );
