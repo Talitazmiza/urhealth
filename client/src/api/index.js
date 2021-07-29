@@ -12,7 +12,7 @@ API.interceptors.request.use((req) => {
 export const signIn = (form) => API.post('/user/signin', form);
 export const signUp = (form) => API.post('/user/signup', form);
 export const signUpCreate = (form) => API.post('/user/signup', form);
-
+export const getPasienProfil = (id) => API.get('/patient/profile/'+id);
 ////// Patient API ///////
 export const getAllPatient = () => {
   return axios.get('http://localhost:5000/patient/all');
