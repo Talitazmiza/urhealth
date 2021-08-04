@@ -1,7 +1,7 @@
 import Patient from '../models/pasien.js';
 import UserModal from '../models/user.js';
 import mongoose from "mongoose";
-import data from "../models/data.js";
+import Grafik from "../models/data.js";
 
 // READ patients
 export const getAllPatient = async (req, res) => {
@@ -77,7 +77,7 @@ export const deletePatient = async (req, res) => {
 
 export const getGraph = async (req, res) => {
     try {
-        const graphData = await data.find({}, {"_id" : 0});
+        const graphData = await Grafik.find();
 
         res.status(200).json({
             result : graphData
@@ -87,6 +87,17 @@ export const getGraph = async (req, res) => {
     }
 }
 
+export const addGraph = async (req, res) => {
+    const { data_grafik } = req.body;
+    try {
+        const result = await Grafik.create({ data_grafik });
+        res.status(200).json({ result });
+    } catch (error) {
+        res.status(500).json({ message: "Something went wrong" });
+
+        console.log(error);
+    }
+}
 export const patientProfile = async (req, res) => {
     const { id } = req.params;
     const user_data = id;

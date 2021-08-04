@@ -25,7 +25,7 @@ app.use('/user', userRouter);
 app.use('/patient', pasienRouter); //url base buat  -> /pasien/all, /pasien/delete/{id}, /
 app.use('/doctor', doctorRouter);
 
-const CONNECTION_URL = 'mongodb://user17:Talitaiza17@cluster0-shard-00-00.kqihq.mongodb.net:27017,cluster0-shard-00-01.kqihq.mongodb.net:27017,cluster0-shard-00-02.kqihq.mongodb.net:27017/urhealth?ssl=true&replicaSet=atlas-jak5hd-shard-0&authSource=admin&retryWrites=true&w=majority';
+const CONNECTION_URL = 'mongodb://root:root@cluster0-shard-00-00.z4mps.mongodb.net:27017,cluster0-shard-00-01.z4mps.mongodb.net:27017,cluster0-shard-00-02.z4mps.mongodb.net:27017/ewaras?ssl=true&replicaSet=atlas-jr0z7l-shard-0&authSource=admin&retryWrites=true&w=majority';
 
 // set port, listen for requests
 const PORT = process.env.PORT|| 5000;
