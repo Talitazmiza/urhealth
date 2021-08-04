@@ -11,6 +11,11 @@ const pasienSchema = mongoose.Schema({
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User"
+        },
+    data_grafik:
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Grafik"
         }
 });
 
