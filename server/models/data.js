@@ -4,8 +4,8 @@
 
 import mongoose from "mongoose";
 var data_object_grafik = mongoose.Schema( {
-    metric: {type: String, max: 100, required: true},
-    value: {type: Number, max: 100, required: true},
+    metric: {type: String, required: true},
+    value: {type: Number, required: true},
 }, { _id : false });
 const grafikSchema = mongoose.Schema({
         id: {type: String},

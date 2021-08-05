@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import HGraph, { hGraphConvert, calculateHealthScore } from 'modified-lite-hgraph';
+import HGraph, { hGraphConvert, calculateHealthScore } from 'new-hgraph';
 import '../Data/data.css';
-import { getGraph } from '../../../api';
+import {getGraph, getPasienProfil} from '../../../api';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 function Graph() {
@@ -11,17 +11,31 @@ function Graph() {
         updateWindowDimensions();
         window.addEventListener('resize', updateWindowDimensions);
         // document.addEventListener('mousedown', handleClick);
-        retrieveGraph();
+        retrieveProfil();
         return function cleanup() {
             window.removeEventListener('resize', updateWindowDimensions);
             // document.removeEventListener('mousedown', handleClick);
         };
     }, []);
 
-    const retrieveGraph = () => {
-        getGraph()
+    // const retrieveGraph = () => {
+    //     getGraph()
+    //         .then(response => {
+    //             // console.log(response.data.result[0].data_grafik)
+    //             // setGraph(response.data.result[0].data_grafik);
+    //             setGraph(response.data.result)
+    //         })
+    //         .catch(e => {
+    //             console.log(e);
+    //         });
+    // }
+    const userProfile = JSON.parse(localStorage.getItem('profile'));
+
+
+    const retrieveProfil = () => {
+        getPasienProfil(userProfile.result.id)
             .then(response => {
-                setGraph(response.data.result);
+                setGraph(response.data.result.data_grafik.data_grafik);
             })
             .catch(e => {
                 console.log(e);

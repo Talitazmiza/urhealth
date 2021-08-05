@@ -123,7 +123,12 @@ export const patientProfile = async (req, res) => {
                     path: 'role',
                 }
             }
-        ).exec((err, patient) => {
+        ).populate(
+                {
+                    path: 'data_grafik',
+                }
+            ).
+        exec((err, patient) => {
             if (err) {
                 res.status(500).send({message: err});
                 return;
