@@ -95,7 +95,7 @@ function initial() {
    User.estimatedDocumentCount( async (err, count) => {
        const selectedRole = await Role.findOne({name : "Pasien"});
        if (!err && count === 0) {
-            for (let i = 0; i < 52; i++) {
+            for (let i = 0; i < 50; i++) {
                 new User({
                     name: `${faker.name.firstName()} ${faker.name.lastName()}`,
                     email: faker.internet.email(faker.name.firstName(), faker.name.lastName()),
