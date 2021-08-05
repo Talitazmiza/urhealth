@@ -9,12 +9,17 @@ import pasienRouter from "./routes/pasien.js";
 import doctorRouter from "./routes/doctor.js";
 import Role from './models/roles.js';
 const app = express();
-
+import Grafik from "./models/data.js";
+import User from "./models/user.js";
+import Patient from "./models/pasien.js";
+import faker from 'faker';
+import bcrypt from "bcryptjs";
 app.use(cors())
 
 app.use(bodyParser.json({ limit: '30mb', extended: true }))
 app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }))
 
+faker.locale = "id_ID";
 
 // simple route
 app.get("/", (req, res) => {
@@ -37,41 +42,95 @@ mongoose.connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: tr
   .catch((error) => console.log(`${error} did not connect`));
 
 mongoose.set('useFindAndModify', false);
+function randomIntFromInterval(min, max) { // min and max included
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+function randomBloodtype() {
+    const bloodtype = ["O", "B", "O+", "O-", "B+", "B-", "A", "A+", "A-", "AB", "AB+", "AB-"]
+    const min = 0;
+    const max = bloodtype.length;
+    return bloodtype[Math.floor(Math.random() * (max - min + 1) + min)];
+}
 function initial() {
-   Role.estimatedDocumentCount((err, count) => {
-        if (!err && count === 0) {
-            new Role({
-                name: "Dokter",
-                id : 1
-            }).save(err => {
-                if (err) {
-                    console.log("error", err);
-                }
+   Grafik.estimatedDocumentCount((err, count) => {
+        if (!err && count === 2) {
+            for (let i = 0; i < 50; i++) {
+                new Grafik({
+                    data_grafik : [
+                        {
+                            metric: "gsr",
+                            value: randomIntFromInterval(1, 10)
+                        },
+                        {
+                            metric: "hr",
+                            value: randomIntFromInterval(60, 200)
+                        },
+                        {
+                            metric: "spo2",
+                            value: randomIntFromInterval(90, 100)
+                        },
+                        {
+                            metric: "pulse",
+                            value: randomIntFromInterval(60, 200)
+                        },
+                        {
+                            metric: "resp",
+                            value: randomIntFromInterval(12, 50)
+                        },
+                        {
+                            metric: "temperature",
+                            value: randomIntFromInterval(35, 40)
+                        }
+                    ]
+                }).save(err => {
+                    if (err) {
+                        console.log("error", err);
+                    }
 
-                console.log("added 'dokter' to roles collection");
-            });
+                    console.log("data added");
+                });
+            }
+        }
+    });
+   User.estimatedDocumentCount( async (err, count) => {
+       const selectedRole = await Role.findOne({name : "Pasien"});
+       if (!err && count === 0) {
+            for (let i = 0; i < 52; i++) {
+                new User({
+                    name: `${faker.name.firstName()} ${faker.name.lastName()}`,
+                    email: faker.internet.email(faker.name.firstName(), faker.name.lastName()),
+                    password: await bcrypt.hash('password',12),
+                    role: selectedRole._id
+                }).save(err => {
+                    if (err) {
+                        console.log("error", err);
+                    }
+                    console.log("data added");
+                });
+            }
+        }
+    });
+   Patient.estimatedDocumentCount( async (err, count) => {
+       const users = await User.find();
+       const grafik = await Grafik.find();
 
-            new Role({
-                name: "Pasien",
-                id : 2
-            }).save(err => {
-                if (err) {
-                    console.log("error", err);
-                }
-
-                console.log("added 'pasien' to roles collection");
-            });
-
-            new Role({
-                name: "Klinik",
-                id : 3
-            }).save(err => {
-                if (err) {
-                    console.log("error", err);
-                }
-
-                console.log("added 'perawat' to roles collection");
-            });
+       if (!err && count === 0) {
+            for (let i = 0; i < users.length; i++) {
+                new Patient({
+                    firstName: users[i].name.split(' ')[0],
+                    lastName: users[i].name.split(' ')[1],
+                    bloodtype: randomBloodtype(),
+                    height: randomIntFromInterval(150, 185),
+                    weight: randomIntFromInterval(30, 200),
+                    user_data: users[i]._id,
+                    data_grafik:grafik[i]._id
+                }).save(err => {
+                    if (err) {
+                        console.log("error", err);
+                    }
+                    console.log("data added");
+                });
+            }
         }
     });
 }
