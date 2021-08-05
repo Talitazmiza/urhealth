@@ -53,7 +53,7 @@ function randomBloodtype() {
 }
 function initial() {
    Grafik.estimatedDocumentCount((err, count) => {
-        if (!err && count === 2) {
+        if (!err && count === 0) {
             for (let i = 0; i < 50; i++) {
                 new Grafik({
                     data_grafik : [
