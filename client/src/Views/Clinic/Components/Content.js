@@ -86,8 +86,8 @@ function Content() {
     };
 
 
-    const sizeBasedOnWindow = ((windowWidth / 4) * 2);
-    const size = sizeBasedOnWindow > 1000 ? 1000 : sizeBasedOnWindow;
+    const sizeBasedOnWindow = ((windowWidth / 6) * 2);
+    const size = sizeBasedOnWindow > 2000 ? 2000 : sizeBasedOnWindow;
 
 
     return (
@@ -140,8 +140,7 @@ function Content() {
                         {
                             !patients.length ? <CircularProgress /> : (
                                 <>
-                                    <h5>Nama Pasien : {patients[graph].firstName} {patients[graph].lastName}</h5>
-                                    <div className="vis-container">
+                                    <h5 className="text-center">Nama Pasien : {patients[graph].firstName} {patients[graph].lastName}</h5>
                                         <HGraph
                                             data={convertDataSet(patients[graph].data_grafik.data_grafik)}
                                             score={parseInt(calculateHealthScore(convertDataSet(patients[graph].data_grafik.data_grafik),10))}
@@ -152,7 +151,6 @@ function Content() {
                                             scoreFontSize={size < 300 ? 50 : 120}
                                             onPointClick={handlePointClick}
                                         />
-                                    </div>
                                 </>
 
                             )
