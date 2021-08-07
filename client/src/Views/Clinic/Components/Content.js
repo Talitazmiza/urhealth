@@ -1,11 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import './css/style.css'
-import Carousel from 'react-multi-carousel';
-import 'react-multi-carousel/lib/styles.css';
-import cloneDeep from "lodash/cloneDeep";
-import throttle from "lodash/throttle";
-import Pagination from "rc-pagination";
-import "rc-pagination/assets/index.css";
 import {useDispatch, useSelector} from "react-redux";
 import {getAllPatient} from "../../../actions/patients";
 import TableContainer from "@material-ui/core/TableContainer";
@@ -15,7 +8,6 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TablePagination from "@material-ui/core/TablePagination";
-import Paper from "@material-ui/core/Paper";
 import HGraph, {calculateHealthScore, hGraphConvert} from "new-hgraph";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
