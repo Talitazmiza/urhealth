@@ -44,7 +44,6 @@ function Content() {
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
-
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(+event.target.value);
         setPage(0);
@@ -115,7 +114,9 @@ function Content() {
                                                 return (
                                                     <TableCell key={column.id}>
                                                         <button className="btn btn-primary"
-                                                                onClick={() => showGraph(index)}>{`${row.firstName} ${row.lastName}`}</button>
+                                                                onClick={() =>
+                                                                    page!=0 ? showGraph(index+(rowsPerPage*page)) : showGraph(index)
+                                                                }>{`${row.firstName} ${row.lastName}`}</button>
                                                     </TableCell>
                                                 );
                                             })}

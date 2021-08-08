@@ -10,10 +10,10 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import IconButton from '@material-ui/core/IconButton';
 import AddBoxIcon from '@material-ui/icons/AddBox';
-import { useDispatch, useSelector } from "react-redux";
-import { signupcreate, signup } from '../../../../src/actions/auth';
+import {useDispatch, useSelector} from "react-redux";
+import {signupcreate, signup} from '../../../../src/actions/auth';
 import {createPatient, updatePatient, deletePatient, getAllPatient} from '../../../actions/patients';
-import { createStore, applyMiddleware, bindActionCreators } from 'redux'
+import {createStore, applyMiddleware, bindActionCreators} from 'redux'
 import authReducer from "../../../reducers/auth";
 import thunk from 'redux-thunk';
 import {AUTHCREATE, CREATE_PASIEN} from "../../../constants/actionTypes";
@@ -28,6 +28,9 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TablePagination from "@material-ui/core/TablePagination";
 import Paper from "@material-ui/core/Paper";
+import {createGraph} from '../../../api';
+import CircularProgress from "@material-ui/core/CircularProgress";
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -94,16 +97,17 @@ export default function PatientList() {
     const [page, setPage] = React.useState(0);
     const [editMode, setEditMode] = React.useState(false);
     const [currentId, setCurrentId] = React.useState(0);
-
+    const [fullWidth, setFullWidth] = React.useState(true);
+    const [maxWidth, setMaxWidth] = React.useState('md');
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
-    const dispatchChaining =  (data, dataPasien) => async (dispatch) => {
+    const dispatchChaining = (data, dataPasien) => async (dispatch) => {
         await Promise.all([
             dispatch(signupcreate(data)),
             // <-- async dispatch chaining in action
         ]);
         return dispatch(createPatient(dataPasien));
     };
-    const dispatchChainingDelete =  (id) => async (dispatch) => {
+    const dispatchChainingDelete = (id) => async (dispatch) => {
         await Promise.all([
             dispatch(deletePatient(id)),
             // <-- async dispatch chaining in action
@@ -116,8 +120,42 @@ export default function PatientList() {
 
     const [open, setOpen] = React.useState(false);
     const [patientData, setPatientData] = useState({
-        firstName: '', lastName: '', bloodtype: '', height: '', weight: '', email: '', password: '', confirmPassword: '', role: 'Pasien'
+        firstName: '',
+        lastName: '',
+        bloodtype: '',
+        height: '',
+        weight: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        role: 'Pasien',
+        data_grafik: ''
     });
+    const [resp, setresp] = useState({
+        metric: 'resp',
+        value: ''
+    })
+    const [hr, sethr] = useState({
+        metric: 'hr',
+        value: ''
+    })
+    const [pulse, setpulse] = useState({
+        metric: 'pulse',
+        value: ''
+    })
+    const [spo2, setspo2] = useState({
+        metric: 'spo2',
+        value: ''
+    })
+    const [temperature, settemperature] = useState({
+        metric: 'temperature',
+        value: ''
+    })
+    const [gsr, setgsr] = useState({
+        metric: 'gsr',
+        value: ''
+    })
+
 
     const [submitted, setSubmitted] = useState(false);
 
@@ -127,6 +165,7 @@ export default function PatientList() {
     useEffect(() => {
         dispatch(getAllPatient());
     }, []);
+
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -144,12 +183,12 @@ export default function PatientList() {
     // }, [])
 
     const handleInputChangePatient = event => {
-        const { name, value } = event.target.value;
-        setPatientData({ ...patientData, [name]: value });
+        const {name, value} = event.target.value;
+        setPatientData({...patientData, [name]: value});
     };
 
     const savePatient = () => {
-        const { firstName, lastName, bloodtype, height, weight, email, password, confirmPassword } = patientData;
+        const {firstName, lastName, bloodtype, height, weight, email, password, confirmPassword} = patientData;
 
         dispatch(createPatient(firstName, lastName, bloodtype, height, weight, email, password, confirmPassword))
             .then(data => {
@@ -220,26 +259,36 @@ export default function PatientList() {
             role: patientData.role
         };
 
-        var dataPatient = {
-            firstName: patientData.firstName,
-            lastName: patientData.lastName,
-            height: patientData.height,
-            weight: patientData.weight,
-            bloodtype: patientData.bloodtype,
-            email: patientData.email
+        var data_grafik = {
+            data_grafik: [
+                gsr,
+                hr,
+                resp,
+                spo2,
+                pulse,
+                temperature
+            ]
         };
 
-        // dispatch(createPatient(dataPatient))
-        // dispatch(signupcreate(data))
 
-        // if(currentId) {
-        //     dispatch(updatePatient(currentId, dataPatient))
-        // } else {
-        actions.dispatchChaining(data, dataPatient);
-        // }
-        clear();
-    };
+        createGraph(data_grafik).then(response => {
+            console.log(response);
+            var dataPatient = {
+                firstName: patientData.firstName,
+                lastName: patientData.lastName,
+                height: patientData.height,
+                weight: patientData.weight,
+                bloodtype: patientData.bloodtype,
+                email: patientData.email,
+                data_grafik: response.data.result._id
+            };
+            actions.dispatchChaining(data, dataPatient);
+            clear();
+            handleClose();
+        })
 
+
+    }
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -249,8 +298,32 @@ export default function PatientList() {
     };
 
     const clear = () => {
-        setPatientData({ firstName: '', lastName: '', bloodtype: '', height: '', weight: '', email: '', password: '', confirmPassword: '', role: 'Pasien' });
+        setPatientData({
+            firstName: '',
+            lastName: '',
+            bloodtype: '',
+            height: '',
+            weight: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+            role: 'Pasien'
+        });
     }
+    // const updateFieldChanged = (name, index) => (event) => {
+    //     let newArr = graphData.map((item, i) => {
+    //         if (index == i) {
+    //             return { ...item, [name]: event.target.value };
+    //         } else {
+    //             return item;
+    //         }
+    //     });
+    //     console.log(newArr);
+    //     // setgraphData(newArr);
+    // };
+    // graphData.map((item, i) => {
+    //     console.log(item);
+    // })
 
     return (
         <div className="content-wrapper">
@@ -262,99 +335,234 @@ export default function PatientList() {
                         </div>
                         <div className="col-sm-6">
                             <IconButton onClick={newPatient} aria-label="create" className="float-right">
-                                <AddBoxIcon />
+                                <AddBoxIcon/>
                             </IconButton>
                             {/*create patient pop up*/}
-                            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-                                <DialogTitle id="form-dialog-title">Add patient</DialogTitle>
-                                <DialogContent>
-                                    <DialogContentText>
-                                        To add patient detail, please fill data here.
-                                    </DialogContentText>
-                                    <TextField
-                                        disabled={editMode === true ? true : false}
-                                        hidden={editMode === true ? true : false}
-                                        autoFocus
-                                        margin="dense"
-                                        id="email"
-                                        label="Email"
-                                        type="text"
-                                        fullWidth
-                                        value={patientData.email} onChange={(e) => setPatientData({...patientData, email: e.target.value })}
-                                    />
-                                    <TextField
-                                        autoFocus
-                                        margin="dense"
-                                        id="firstname"
-                                        label="First Name"
-                                        type="text"
-                                        fullWidth
-                                        value={patientData.firstName} onChange={(e) => setPatientData({...patientData, firstName: e.target.value })}
-                                    />
-                                    <TextField
-                                        autoFocus
-                                        margin="dense"
-                                        id="lastname"
-                                        label="Last Name"
-                                        type="text"
-                                        fullWidth
-                                        value={patientData.lastName} onChange={(e) => setPatientData({...patientData, lastName: e.target.value })}
-                                    />
-                                    <TextField
-                                        id="bloodtype"
-                                        autoFocus
-                                        margin="dense"
-                                        label="Blood Type"
-                                        type="text"
-                                        fullWidth
-                                        value={patientData.bloodtype} onChange={(e) => setPatientData({...patientData, bloodtype: e.target.value })}
-                                    />
-                                    <TextField
-                                        autoFocus
-                                        margin="dense"
-                                        id="height"
-                                        label="Height"
-                                        type="number"
-                                        fullWidth
-                                        value={patientData.height} onChange={(e) => setPatientData({...patientData, height: e.target.value })}
-                                    />
-                                    <TextField
-                                        autoFocus
-                                        margin="dense"
-                                        id="weight"
-                                        label="Weight"
-                                        type="number"
-                                        fullWidth
-                                        value={patientData.weight} onChange={(e) => setPatientData({...patientData, weight: e.target.value })}
-                                    />
-                                    <TextField
-                                        disabled={editMode === true ? true : false}
-                                        hidden={editMode === true ? true : false}
-                                        autoFocus
-                                        margin="dense"
-                                        id="password"
-                                        label="Password"
-                                        type="text"
-                                        fullWidth
-                                        value={patientData.password} onChange={(e) => setPatientData({...patientData, password: e.target.value })}
-                                    />
-                                    <TextField
-                                        disabled={editMode === true ? true : false}
-                                        hidden={editMode === true ? true : false}
-                                        autoFocus
-                                        margin="dense"
-                                        id="confirmPassword"
-                                        label="confirmPassword"
-                                        type="text"
-                                        fullWidth
-                                        value={patientData.confirmPassword} onChange={(e) => setPatientData({...patientData, confirmPassword: e.target.value })}
-                                    />
-                                </DialogContent>
+                            <Dialog open={open}
+                                    fullWidth={fullWidth}
+                                    maxWidth={maxWidth}
+                                    onClose={handleClose}
+                                    aria-labelledby="form-dialog-title">
+                                <div className="d-flex justify-content-around">
+                                    <div className="p-2">
+                                        <DialogTitle id="form-dialog-title">Data Pasien</DialogTitle>
+                                        <DialogContent>
+                                            <DialogContentText>
+                                                To add patient detail, please fill data here.
+                                            </DialogContentText>
+                                            <TextField
+                                                disabled={editMode === true ? true : false}
+                                                hidden={editMode === true ? true : false}
+                                                autoFocus
+                                                margin="dense"
+                                                id="email"
+                                                label="Email"
+                                                type="text"
+                                                fullWidth
+                                                value={patientData.email} onChange={(e) => setPatientData({
+                                                ...patientData,
+                                                email: e.target.value
+                                            })}
+                                            />
+                                            <TextField
+                                                autoFocus
+                                                margin="dense"
+                                                id="firstname"
+                                                label="First Name"
+                                                type="text"
+                                                fullWidth
+                                                value={patientData.firstName} onChange={(e) => setPatientData({
+                                                ...patientData,
+                                                firstName: e.target.value
+                                            })}
+                                            />
+                                            <TextField
+                                                autoFocus
+                                                margin="dense"
+                                                id="lastname"
+                                                label="Last Name"
+                                                type="text"
+                                                fullWidth
+                                                value={patientData.lastName} onChange={(e) => setPatientData({
+                                                ...patientData,
+                                                lastName: e.target.value
+                                            })}
+                                            />
+                                            <TextField
+                                                id="bloodtype"
+                                                autoFocus
+                                                margin="dense"
+                                                label="Blood Type"
+                                                type="text"
+                                                fullWidth
+                                                value={patientData.bloodtype} onChange={(e) => setPatientData({
+                                                ...patientData,
+                                                bloodtype: e.target.value
+                                            })}
+                                            />
+                                            <TextField
+                                                autoFocus
+                                                margin="dense"
+                                                id="height"
+                                                label="Height"
+                                                type="number"
+                                                fullWidth
+                                                value={patientData.height} onChange={(e) => setPatientData({
+                                                ...patientData,
+                                                height: e.target.value
+                                            })}
+                                            />
+                                            <TextField
+                                                autoFocus
+                                                margin="dense"
+                                                id="weight"
+                                                label="Weight"
+                                                type="number"
+                                                fullWidth
+                                                value={patientData.weight} onChange={(e) => setPatientData({
+                                                ...patientData,
+                                                weight: e.target.value
+                                            })}
+                                            />
+                                            <TextField
+                                                disabled={editMode === true ? true : false}
+                                                hidden={editMode === true ? true : false}
+                                                autoFocus
+                                                margin="dense"
+                                                id="password"
+                                                label="Password"
+                                                type="text"
+                                                fullWidth
+                                                value={patientData.password} onChange={(e) => setPatientData({
+                                                ...patientData,
+                                                password: e.target.value
+                                            })}
+                                            />
+                                            <TextField
+                                                disabled={editMode === true ? true : false}
+                                                hidden={editMode === true ? true : false}
+                                                autoFocus
+                                                margin="dense"
+                                                id="confirmPassword"
+                                                label="confirmPassword"
+                                                type="text"
+                                                fullWidth
+                                                value={patientData.confirmPassword} onChange={(e) => setPatientData({
+                                                ...patientData,
+                                                confirmPassword: e.target.value
+                                            })}
+                                            />
+                                        </DialogContent>
+                                    </div>
+                                    <div className="p-2">
+                                        <DialogTitle id="form-dialog-title">Data Kesehatan</DialogTitle>
+
+                                        <DialogContent>
+                                            <DialogContentText>
+                                                To add patient detail, please fill data here.
+                                            </DialogContentText>
+                                            <TextField
+
+                                                autoFocus
+                                                margin="dense"
+                                                id="gsr"
+                                                label="Level Stress"
+                                                type="number"
+                                                fullWidth
+                                                value={gsr.value}
+                                                onChange={(e) =>
+                                                    setgsr({
+                                                        ...gsr,
+                                                        value: e.target.value
+                                                    })
+                                                }
+                                            />
+                                            <TextField
+                                                autoFocus
+                                                margin="dense"
+                                                id="hr"
+                                                label="Heart Rate"
+                                                type="number"
+                                                fullWidth
+                                                value={hr.value}
+                                                onChange={(e) =>
+                                                    sethr({
+                                                        ...hr,
+                                                        value: e.target.value
+                                                    })
+                                                }
+                                            />
+                                            <TextField
+                                                autoFocus
+                                                margin="dense"
+                                                id="spo2"
+                                                label="Oxygen Saturation"
+                                                type="number"
+                                                fullWidth
+                                                value={spo2.value}
+                                                onChange={(e) =>
+                                                    setspo2({
+                                                        ...spo2,
+                                                        value: e.target.value
+                                                    })
+                                                }
+                                            />
+
+                                            <TextField
+                                                autoFocus
+                                                margin="dense"
+                                                id="pulse"
+                                                label="Detak Jantung"
+                                                type="number"
+                                                fullWidth
+                                                value={pulse.value}
+                                                onChange={(e) =>
+                                                    setpulse({
+                                                        ...pulse,
+                                                        value: e.target.value
+                                                    })
+                                                }
+                                            />
+                                            <TextField
+                                                autoFocus
+                                                margin="dense"
+                                                id="resp"
+                                                label="Pernafasan"
+                                                type="number"
+                                                fullWidth
+                                                value={resp.value}
+                                                onChange={(e) =>
+                                                    setresp({
+                                                        ...resp,
+                                                        value: e.target.value
+                                                    })
+                                                }
+                                            />
+                                            <TextField
+                                                autoFocus
+                                                margin="dense"
+                                                id="temperature"
+                                                label="Temperatur"
+                                                type="number"
+                                                fullWidth
+                                                value={temperature.value}
+                                                onChange={(e) =>
+                                                    settemperature({
+                                                        ...temperature,
+                                                        value: e.target.value
+                                                    })
+                                                }
+                                            />
+                                        </DialogContent>
+                                    </div>
+                                </div>
+
                                 <DialogActions>
                                     <Button onClick={handleClose} variant="outlined" color="secondary">
                                         Cancel
                                     </Button>
-                                    <Button onClick={editMode === true ? handleUpdatePatient : handleSubmit} variant="outlined" color="primary" type="submit" fullWidth>
+                                    <Button onClick={editMode === true ? handleUpdatePatient : handleSubmit}
+                                            variant="outlined" color="primary" type="submit" fullWidth>
                                         Add
                                     </Button>
                                 </DialogActions>
@@ -377,7 +585,7 @@ export default function PatientList() {
                                                     <TableCell
                                                         key={column.id}
                                                         align={column.align}
-                                                        style={{ minWidth: column.minWidth }}
+                                                        style={{minWidth: column.minWidth}}
                                                     >
                                                         {column.label}
                                                     </TableCell>
@@ -399,16 +607,21 @@ export default function PatientList() {
                                                                         {column.format && typeof value == 'number' ? column.format(value) : value}
                                                                     </TableCell>
                                                                 );
-                                                            } else  {
-                                                                return  (
+                                                            } else {
+                                                                return (
                                                                     <TableCell key={column.id} align={column.align}>
                                                                         <div>
-                                                                            <IconButton onClick={()=>editPatient(row)} aria-label="delete" className={classes.margin}>
-                                                                                <EditIcon />
+                                                                            <IconButton onClick={() => editPatient(row)}
+                                                                                        aria-label="delete"
+                                                                                        className={classes.margin}>
+                                                                                <EditIcon/>
                                                                             </IconButton>
                                                                             {/*edit patient pop up*/}
-                                                                            <IconButton onClick={()=>handleDeletePatient(row['_id'])} aria-label="delete" className={classes.margin}>
-                                                                                <DeleteIcon />
+                                                                            <IconButton
+                                                                                onClick={() => handleDeletePatient(row['_id'])}
+                                                                                aria-label="delete"
+                                                                                className={classes.margin}>
+                                                                                <DeleteIcon/>
                                                                             </IconButton>
                                                                         </div>
                                                                     </TableCell>
