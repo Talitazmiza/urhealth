@@ -9,7 +9,7 @@ import {
     deletePatient,
     patientProfile,
     addGraph,
-    updateGraph
+    updateGraph, addGraphtoPasien
 } from "../controllers/pasien.js";
 router.put("/grafik/update/:id", updateGraph);
 router.get("/all", getAllPatient);
@@ -19,6 +19,7 @@ router.post("/grafik/create", addGraph);
 router.put("/update/:id", updatePatient);
 router.delete("/delete/:id", deletePatient);
 router.get("/profile/:id", patientProfile);
+router.put("/add/graph/", addGraphtoPasien);
 
 //router = -
 // metod = POST, url=/pasien/all, fungsi=getAllpasien

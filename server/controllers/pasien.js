@@ -175,6 +175,17 @@ export const addGraph = async (req, res) => {
         console.log(error);
     }
 }
+export const addGraphtoPasien = async (req, res) => {
+    const {data_grafik} = req.body;
+    const {id_pasien} = req.body
+    try {
+        const result = await Patient.findByIdAndUpdate(id_pasien, {$set : {data_grafik : data_grafik}}, {new: true});
+        res.status(200).json({result});
+    } catch (error) {
+        res.status(500).json({message: "Something went wrong"});
+        console.log(error);
+    }
+}
 export const patientProfile = async (req, res) => {
     const {id} = req.params;
     const user_data = id;
