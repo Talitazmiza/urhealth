@@ -50,3 +50,14 @@
         width: 50%;
     }
 }
+
+.hide_history {
+    display: none;
+}
+.display_history {
+    display:block;
+    top : 50vh
+}
+body > svg {
+    display: none !important;
+}
