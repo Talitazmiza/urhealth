@@ -8,9 +8,10 @@ import {
     getGraph,
     deletePatient,
     patientProfile,
-    addGraph
+    addGraph,
+    updateGraph
 } from "../controllers/pasien.js";
-
+router.put("/grafik/update/:id", updateGraph);
 router.get("/all", getAllPatient);
 router.get("/alldata", getGraph);
 router.post("/create", createPatient);
