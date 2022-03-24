@@ -1,7 +1,7 @@
 Overview
 
-![Picture1](https://user-images.githubusercontent.com/54302300/159866895-49ea8e62-6a5f-4fd6-b44c-77a34b715430.png)
-![Picture2](https://user-images.githubusercontent.com/54302300/159866909-0c35ed1e-3b02-4319-8da9-dc4ab591d315.png)
+![image](https://user-images.githubusercontent.com/54302300/159867199-a52f185d-5eef-4e0e-a607-d404fe0567e7.png)
+![image](https://user-images.githubusercontent.com/54302300/159867313-323ddc38-7eb4-4dfa-9dfb-003381dd8689.png)
 
 
 HOW TO RUN:
